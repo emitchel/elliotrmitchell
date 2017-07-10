@@ -9,7 +9,18 @@
  * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
- *
- *= require_tree .
- *= require_self
+ *= require bootstrap.css
+ *= require animate.css
+ *= require ionicons.css
+ *= require flaticon.css
+ *= require owl.carousel.css
+ *= require owl.theme.css
+ *= require owl.transitions.css
+ *= require lightbox.css
+ *= require masterslider.css
+ *= require masterslider_default_skin.css
+ *= require cubeportfolio.min.css
+ *= require dzsparallaxer.css
+ *= require main_css_style.css
+ *= require swiper.css
  */
