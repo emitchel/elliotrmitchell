@@ -1,242 +1,351 @@
-function Shop() {
-	this.speedPrice = 100;
-	this.consistencyPrice = 75;
-	this.iqPrice = 25;
-	this.incomePrice = 200;
+function Shop(){
+    var me = this;
+    this.Items = [];
+    this.Shop = $("#shop");
+    this.DisplayedItem;
+    this.adc;
+    this.SetUp = function(){
+        this.MakeItems();
+        this.MakeShop();
+    }
 
-	this.speedInc = 1;
-	this.consistencyInc = 1;
-	this.iqInc = 1;
-	this.incomeInc = .95;
+    function ItemMaker(){
+        this.GetItem = function (name){
+            var returnedItem;
+            switch(name) {
+                case "LongSword":
+                    returnedItem = new Item(false,100,0,"Long Sword","+3 damage",3,0,0,"assets/long.png");
+                    break;
+                case "Dagger":
+                    returnedItem = new Item(false, 100,1, "Dagger", "+15% attack speed",0,15,0,"assets/dagger.png");
+                    break;
+                case "BrawlersGloves":
+                    returnedItem = new Item(false, 100, 2, "Brawler's Gloves","+8% critical strike",0,0,8,"assets/brawlers.png");
+                    break;
+                case "ProspectorsBlade":
+                    returnedItem = new Item(false,150,3, "Prospector's Blade","+6% critical strike<br>+3 damage",3,0,6,"assets/prospectors.png");
+                    break;
+                case "InfinityEdge":
+                    returnedItem = new Item(true,500,4,"Infinity Edge", "+12% critical strike<br>+20 attack damage",20,0,12,"assets/infinity.png");
+                    break;
+                case "PhantomDancer":
+                    returnedItem = new Item(true,500,5,"Phantom Dancer","+35% critical strike<br>+50% attack speed",0,50,35,"assets/phantom.png");
+                    break;
+                case "TriForce":
+                    returnedItem = new Item(true,500,6,"Tri Force", "+20% critical strike<br>+10 attack damage<br>+30% attack speed",10,30,20,"assets/tri.png");
+                    break;
+                case "StatikkShiv":
+                    returnedItem = new Item(true, 500,7,"Statikk Shiv", "+40% critical strike<br>+40% attack speed<br>with special",0,40,40,"assets/statikk.png");
+                    break;
+                case "Runaans":
+                    returnedItem = new Item(true, 500, 8, "Runaan's Hurricane", "+70% attack speed<br>with special",0,70,0,"assets/runaans.png");
+                    break;
+                default:
+                    returnedItem=  null;
+                    break;
+            }
 
-	var temp;
+            return returnedItem;
+        }
+    }
 
-	this.buyBoost = function(boost) {
-		var nBoost = Number(boost);
+    this.MakeItems = function(){
+        var maker = new ItemMaker();
+        //6 big items
+        //3 small items
 
-		//decrement total money
-		money.decrementMoney(nBoost * 100);
+        //Children items
+        //100g small AD
+        //100g small AS
+        //100g small Crit
+        var LongSword = maker.GetItem("LongSword");
+        var Dagger = maker.GetItem("Dagger");
+        var BrawlersGloves = maker.GetItem("BrawlersGloves");
 
-		//give car the boost
-		car.boostValue = nBoost;
+        var ProspectorsBlade = maker.GetItem("ProspectorsBlade");
+        //Big items
+        //500g Big AD, small crit
+        //AD, AD, Crit
+        //500g Medium AS, Big crit (pd)
+        //AS, AS, Crit
+        //500g Medium AD AS Crit (tri force)
+        //AD, AS, Crit
+        //500g Medium AD, Big Crit special (static shiv)
+        //AD, Crit, Crit
+        //500g Big AS special (runaans) - two other minions
+        //AS, AS, AS
+        //100g Small AD AS Crit
 
-		//add string to tell user they get one boost
-		$("#showBoost").html("<i>Next race driven will have an additional " + boost + " steps added on to each step taken");
-		$("#hideme").show("slow").effect("highlight", 500);
+        var InfinityEdge = maker.GetItem("InfinityEdge");
+        InfinityEdge.children.push(maker.GetItem("LongSword"));
+        InfinityEdge.children.push(maker.GetItem("LongSword"));
+        InfinityEdge.children.push(maker.GetItem("BrawlersGloves"));
 
-		//let global system know that a boost has been purchased
-		localStorage.setItem("boost", 1);
+        var PhantomDancer = maker.GetItem("PhantomDancer");
+        PhantomDancer.children.push(maker.GetItem("Dagger"));
+        PhantomDancer.children.push(maker.GetItem("BrawlersGloves"));
+        PhantomDancer.children.push(maker.GetItem("BrawlersGloves"));
 
-		//re call the enablement button function
-		money.doRepeatedActions();
-	}
+        var TriForce = maker.GetItem("TriForce");
+        TriForce.children.push(maker.GetItem("LongSword"));
+        TriForce.children.push(maker.GetItem("Dagger"));
+        TriForce.children.push(maker.GetItem("BrawlersGloves"));
 
-	this.buyUpgrade = function(upgrade) {
+        var StatikkShiv = maker.GetItem("StatikkShiv");
+        StatikkShiv.children.push(maker.GetItem("LongSword"));
+        StatikkShiv.children.push(maker.GetItem("BrawlersGloves"));
+        StatikkShiv.children.push(maker.GetItem("BrawlersGloves"));
 
-		switch(upgrade) {
+        var Runaans = maker.GetItem("Runaans");
+        Runaans.children.push(maker.GetItem("Dagger"));
+        Runaans.children.push(maker.GetItem("Dagger"));
+        Runaans.children.push(maker.GetItem("Dagger"));
 
-			case "speed":
+        me.Items.push(LongSword);
+        me.Items.push(Dagger);
+        me.Items.push(BrawlersGloves);
+        me.Items.push(ProspectorsBlade);
+        me.Items.push(InfinityEdge);
+        me.Items.push(PhantomDancer);
+        me.Items.push(TriForce);
+        me.Items.push(StatikkShiv);
+        me.Items.push(Runaans);
+    }
 
-				money.decrementMoney(this.speedPrice);
+    this.SetADC = function(adc){
+        me.adc = adc;
+    }
 
-				var cartop = car.top;
-				cartop += this.speedInc;
-				car.updateTop(cartop);
 
-				this.speedPrice = Math.round(this.speedPrice * 1.25);
 
-				temp = this.speedInc;
-				this.speedInc = Math.round(this.speedInc * 1.05);
+    this.SetGold = function(){
+        $("#shop_gold").html(adc.gold);
+    }
 
-				//if it didn't increment, increment by 1
-				if (temp == this.speedInc) {
-					this.speedInc++;
-				}
-				break;
-			case "cons":
-				if ((car.bot + this.consistencyInc) < car.top) {
-					money.decrementMoney(this.consistencyPrice);
-					var carbot = car.bot;
-					carbot += this.consistencyInc;
-					car.updateBot(carbot);
+    this.MakeShop = function(){
+        //fill shop
+        for(var i=0; i<me.Items.length; i++){
+            var item = me.Items[i];
+            var img = $("#shop_"+i).find(".shop_img");
+            img.attr("src",item.pic);
+        }
+        $(".shop_item").click(function(){
+            var id=$(this).attr("id");
+            var idArray = id.split("_");
+            id = idArray[1];
+            var i = me.Items[Number(id)];
+            me.DisplayItem(i);
+        });
 
-					this.consistencyPrice = Math.round(this.consistencyPrice * 1.25);
+    }
 
-					temp = this.consistencyInc;
-					this.consistencyInc = Math.round(this.consistencyInc * 1.05);
-					if (temp == this.consistencyInc) {
-						this.consistencyInc++;
-					}
-				}
-				//increase amount
-				break;
-			case"iq":
+    this.HideShop = function(){
+        //me.Shop.hide();
+        me.Shop.fadeOut("slow");
+    }
 
-				money.decrementMoney(this.iqPrice);
-				var cariq = driver.iq;
-				cariq += this.iqInc;
-				driver.iq = cariq;
-				this.iqPrice = Math.round(this.iqPrice * 1.6);
-				temp = this.iqInc;
-				this.iqInc = Math.round(this.iqInc * 1.05);
-				if (temp == this.iqInc) {
-					this.iqInc++;
-				}
-				//increase amount
-				break;
-			case"income":
+    this.Remove = function(){
+        me.Shop.hide();
+    }
 
-				money.decrementMoney(this.incomePrice);
-				var moneyspeed = money.speed;
-				moneyspeed *= this.incomeInc;
+    this.GetItemById = function(id){
+        for(var i=0; i<me.Items.length; i++){
+            if(me.Items[i].id == id){
+                return me.Items[i];
+            }
+        }
+    }
 
-				money.startBankroll(moneyspeed);
+    this.DisplayItem = function(item){
+        me.DisplayedItem = item;
+        me.SetBuyBtnState(item);
+        $("#item_display_img").attr("src",item.pic);
+        $("#item_display_title").html(item.name);
+        $("#item_display_description").html(item.description);
+        $("#item_display_button").val("Buy $"+item.cost);
+        me.ShowDependItems(item);
+    }
 
-				this.incomePrice = Math.round(this.incomePrice * 1.5);
-				//this.incomeInc=Math.round(this.incomeInc*1.05);
-				//increase amount
-				break;
+    this.DisplayItemById = function(id){
+        var item = me.GetItemById(id);
+        me.DisplayedItem = item;
+        me.SetBuyBtnState(item);
+        $("#item_display_img").attr("src",item.pic);
+        $("#item_display_title").html(item.name);
+        $("#item_display_description").html(item.description);
+        $("#item_display_button").val("Buy $"+item.cost);
+        me.ShowDependItems(item);
+    }
 
-		}
+    this.ShowDependItems = function(item){
+        if(item.children!=null && item.children.length >0){
+            var shtml="<table id='dependent_table'><tr>";
+            for(var i =0; i<item.children.length;i++){
+                var child = item.children[i];
+                shtml+="<td style='width:64px;height:64px;'><div class='dependent_item' onclick='shop.DisplayItemById("+child.id+");'><img class='shop_img' src='"+ child.pic +"'/></div></td>";
+            }
+            shtml+="</tr></table>";
+            $("#dependent_items").html(shtml);
 
-		//update stats on screen
-		car.statsOut(car.bot, car.top, driver.iq)
-		this.updateIncrements();
-		this.updatePrices();
+        } else {
+            $("#dependent_items").html("");
+        }
+    }
 
-		money.doRepeatedActions();
+    this.SetBuyBtnState = function(item){
+        if(adc.gold>=item.cost){
+            $(".buybtn").removeAttr("disabled");
+        } else {
+            $(".buybtn").attr("disabled", "disabled");
+        }
 
-	}
 
-	this.updateIncrements = function() {
-		$("#topInc").html(this.speedInc);
-		$("#botInc").html(this.consistencyInc);
-		$("#iqInc").html(this.iqInc);
-		$("#incomeInc").html(Number(100 - (this.incomeInc) * 100));
-	}
+    }
 
-	this.updatePrices = function() {
-		$("#topPrice").html(this.speedPrice);
-		$("#botPrice").html(this.consistencyPrice);
-		$("#iqPrice").html(this.iqPrice);
-		$("#incomePrice").html(this.incomePrice);
-	}
+    this.ClearAccountedFors = function(){
+        for(var i=0;i<me.Items.length;i++){
+            for(var j=0;j<me.Items[i].children.length;j++){
+                me.Items[i].children[j].bAccountedFor = false;
+            }
 
-	this.activateItems = function(moneyOwned) {
-		if (localStorage.getItem("racing") == 0 || localStorage.getItem("racing") == null) {
+        }
+    }
 
-			//below is the activation of boost buttons
-			if (localStorage.getItem("boost") == 0 || localStorage.getItem("boost") == null) {
-				if (moneyOwned >= 200) {
-					enableButton("2");
-				} else {
-					disableButton("2");
-				}
-				if (moneyOwned >= 600) {
-					enableButton("6");
-				} else {
-					disableButton("6");
-				}
-				if (moneyOwned >= 1100) {
-					enableButton("11");
-				} else {
-					disableButton("11");
-				}
-				if (moneyOwned >= 1600) {
-					enableButton("16");
-				} else {
-					disableButton("16");
-				}
-				if (moneyOwned >= 2200) {
-					enableButton("22");
-				} else {
-					disableButton("22");
-				}
-				if (moneyOwned >= 3000) {
-					enableButton("30");
-				} else {
-					disableButton("30");
-				}
-				if (moneyOwned >= 3500) {
-					enableButton("35");
-				} else {
-					disableButton("35");
-				}
-				if (moneyOwned >= 4200) {
-					enableButton("42");
-				} else {
-					disableButton("42");
-				}
-				if (moneyOwned >= 5100) {
-					enableButton("51");
-				} else {
-					disableButton("51");
-				}
-				if (moneyOwned >= 5800) {
-					enableButton("58");
-				} else {
-					disableButton("58");
-				}
-				if (moneyOwned >= 6900) {
-					enableButton("69");
-				} else {
-					disableButton("69");
-				}
-				if (moneyOwned >= 8000) {
-					enableButton("80");
-				} else {
-					disableButton("80");
-				}
+    this.SellItem = function(item){
+        //TODO:
+        //add .5*item.cost to gold count
+        adc.gold += .5*item.originalCost;
+        adc.RemoveItem(item);
+        //remove from item tray
 
-			} else {
-				//a boost has been bought, disable them until used
-				$(".btnBoost").attr("disabled", true);
-			}
+        //have to go through each main item that
+        //uses this item, and increment the cost
+        me.ClearAccountedFors();
 
-			if (localStorage.getItem("inTourney") == 0) {
-				if (moneyOwned >= this.speedPrice) {
-					enableButton("btnSpeed");
-				} else {
-					disableButton("btnSpeed");
+        if(!item.main){
+            for(var i=0;i<me.Items.length;i++){
+                if(me.Items[i].main){
+                    for(var j=0;j<me.Items[i].children.length;j++){
+                        if(me.Items[i].children[j].id==item.id && !me.Items[i].children[j].bAccountedFor){
 
-				}
+                            me.Items[i].cost += me.Items[i].children[j].cost;
 
-				if (moneyOwned >= this.consistencyPrice && ((car.bot + this.consistencyInc) < car.top)) {
-					enableButton("btnCons");
-				} else {
-					disableButton("btnCons");
+                            //this is to make sure we don't count the same item more than once.
+                            me.Items[i].children[j].bAccountedFor = true;
+                            break;
+                        }
+                    }
+                }
+            }
 
-				}
-				if (moneyOwned >= this.iqPrice) {
-					enableButton("btnIQ");
-				} else {
-					disableButton("btnIQ");
 
-				}
+        }
 
-				if (moneyOwned >= this.incomePrice) {
-					enableButton("btnIncome");
-				} else {
-					disableButton("btnIncome");
+    }
 
-				}
-			} else {
-				//tourney is in action
-				$(".shop_buttons").attr("disabled", true);
-			}
-		} else {
-			//racing is in action, disable all buttons
-			$(".btnBoost").attr("disabled", true);
-			$(".shop_buttons").attr("disabled", true);
-		}
+    this.BuyItem = function(){
+        var gold = adc.gold;
+        var item = me.DisplayedItem;
+        //global adc
+        if(adc.gold>=item.cost && adc.items.length<6){
 
-	}
-	function enableButton(id) {
-		$("#" + id).attr("disabled", false);
-	}
+            if(!item.main){
+                //have to decrement any main items
+                //that use the sub item
+                for(var i=0;i<me.Items.length;i++){
+                    if(me.Items[i].main){
+                        for(var j=0;j<me.Items[i].children.length;j++){
+                            if(me.Items[i].children[j].id==item.id && !me.Items[i].children[j].bAccountedFor){
+                                me.Items[i].cost -= me.Items[i].children[j].cost;
 
-	function disableButton(id) {
-		$("#" + id).attr("disabled", true);
-	}
+                                //this is to make sure we don't count the same item more than once.
+                                me.Items[i].children[j].bAccountedFor = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            } else {
+                //since its a main item
+                //remove all child items currently in
+                //adc inventory
+                me.ClearAccountedFors();
+
+                var tempArray = [];
+                for(var i=0;i<adc.items.length;i++){
+                    if(!adc.items[i].main){
+                        for(var j=0;j<item.children.length;j++){
+                            if(item.children[j].id == adc.items[i].id && !item.children[j].bAccountedFor){
+                                //remove this child item from the inventory
+                                //adc.items = adc.items.splice(i,1);
+                                tempArray.push(adc.items[i]);
+                                item.children[j].bAccountedFor=true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                me.ClearAccountedFors();
+
+                //remove the child items from their inventory.
+                for(var i=0; i<tempArray.length;i++){
+                    var index = adc.items.indexOf(tempArray[i]);
+                    if(index>-1){
+                        adc.items.splice(index,1);
+                    }
+                }
+
+                //increment cash values of main items
+                //who had child items that were just removed
+                //i.e. LongSword just went into an IE
+                //increment the cost of every main item
+                //that uses LongSword.
+                for(var i=0; i<tempArray.length;i++){
+                    for(var j=0;j<me.Items.length;j++){
+                        for(var k=0;k<me.Items[j].children.length;k++){
+                            if(me.Items[j].children[k].id == tempArray[i].id && !me.Items[j].children[k].bAccountedFor){
+                                me.Items[j].cost += tempArray[i].cost;
+                                me.Items[j].children[k].bAccountedFor = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                //TODO:
+                //Now you have to go back through
+                //the adc's inventory
+                //and decrease the value of main items
+                //for every non-main item in their inventory
+                //
+            }
+
+            adc.gold -= item.cost;
+            adc.AddItem(item);
+            adc.UpdateStats();
+            me.SetBuyBtnState(item);
+            me.SetGold();
+
+            //me.ClearAccountedFors();
+        }
+    }
+}
+
+function Item(bMainItem,nCost,nID,sName,sDescription,nAD,nAS,nCrit,sPic){
+    this.main = bMainItem;
+    this.cost=nCost;
+    this.originalCost = nCost;
+    this.id=nID;
+    this.name=sName;
+    this.description=sDescription;
+    this.ad=nAD;
+    this.as=nAS;
+    this.crit=nCrit;
+    this.pic = sPic;
+
+    this.children=[];
+
+    this.bAccountedFor = false;
 
 }

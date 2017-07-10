@@ -6,16 +6,16 @@ var bNewWave = true;
 var bPlaying = false;
 $(function() {
     game = new GameHelper();
-	shop = new Shop();
-	
-	adc = new ADC();
+    shop = new Shop();
+
+    adc = new ADC();
     adc.SetUp();
-	
-	shop.SetUp();
-	shop.Remove();
-	
-   
-	
+
+    shop.SetUp();
+    shop.Remove();
+
+
+
     $(".start").click(function() {
         if (bNewWave) {
             game.StartNewGame();
@@ -40,49 +40,49 @@ function GameHelper() {
     var me = this;
     var numOfMinions = 6;
     var totalOtherMinions = 6;
-	
-	this.MinionWave = $("#minion_wave");
-	this.Shop = $("#shop");
-	this.nLevel=1;
+
+    this.MinionWave = $("#minion_wave");
+    this.Shop = $("#shop");
+    this.nLevel=1;
     this.MinionArray;
 
     this.StartNewGame = function() {
-		//this.CloseShop();
-		
+        //this.CloseShop();
+
         this.MakeMinions();
-		this.ShowHealthBars();
+        this.ShowHealthBars();
         this.StartMinionAttacks();
     }
-	
-	this.ShowHealthBars = function(){
-		for (var i = 0; i < numOfMinions; i++) {
-			 me.MinionArray[i].elHP.show();
-			 me.MinionArray[i].elHP.width(60)
+
+    this.ShowHealthBars = function(){
+        for (var i = 0; i < numOfMinions; i++) {
+            me.MinionArray[i].elHP.show();
+            me.MinionArray[i].elHP.width(60)
         }
-	}
-	
-	this.OpenShop = function(){
-		//FADEOUT MAIN AREA
-		//FADEIN SHOP
-		me.MinionWave.fadeOut("slow",function(){
-			me.Shop.fadeIn("slow");
-		});
-		shop.SetADC(adc);
-		shop.SetGold();
-		
-		
-	}
-	
-	this.CloseShop = function(){
-		me.Shop.fadeOut("slow",function(){
-			me.MinionWave.fadeIn("slow");
-		});
-		adc.FillItems();
-		//me.Shop.animate({height: "0px"}, 500);
-		//me.MinionWave.animate({height: "500px"}, 500);
-		
-	}
-	
+    }
+
+    this.OpenShop = function(){
+        //FADEOUT MAIN AREA
+        //FADEIN SHOP
+        me.MinionWave.fadeOut(100,function(){
+            me.Shop.fadeIn(100);
+        });
+        shop.SetADC(adc);
+        shop.SetGold();
+
+
+    }
+
+    this.CloseShop = function(){
+        me.Shop.fadeOut(100,function(){
+            me.MinionWave.fadeIn(100);
+        });
+        adc.FillItems();
+        //me.Shop.animate({height: "0px"}, 500);
+        //me.MinionWave.animate({height: "500px"}, 500);
+
+    }
+
     this.DistributeFocus = function(bAppending, otherMinions) {
         //CHECK FOR WHEN THEY ARE ALL DEAD.... SHOULDN'T BE DISTRIBUTING, OR RESETING.....
         if (!bAppending) {
@@ -120,16 +120,16 @@ function GameHelper() {
             this.DistributeFocus(false, this.GetNumberOfEnemyMinionsWithoutFocus());
             this.StartMinionAttacks();
         } else {
-			this.nLevel++;
-			//End Wave Sequence 
-			game.OpenShop();
+            this.nLevel++;
+            //End Wave Sequence
+            game.OpenShop();
             bNewWave = true;
             bPlaying = false;
-			 $(".start").val("Next Wave");
+            $(".start").val("Next Wave");
 
         }
     }
-	
+
     this.GetNumberOfEnemyMinionsWithoutFocus = function() {
         var nTotalOtherMinions = 6;
         for (var i = 0; i < numOfMinions; i++) {
@@ -166,31 +166,31 @@ function GameHelper() {
         }
     }
 
-	
+
 
     this.MakeMinions = function() {
         me.MinionArray = [];
-		totalOtherMinions = 6;
+        totalOtherMinions = 6;
         for (var i = 0; i < numOfMinions; i++) {
             var type = "melee";
             if (i <= 2) {
                 type = "ranged";
             }
             var min = new Minion(i, type);
-			
-			min.SetUp()
-			
-			min.AD+=this.nLevel % 2;
-			
+
+            min.SetUp()
+
+            min.AD+=this.nLevel % 2;
+
             min.nFocused = me.getRandomInt(0, totalOtherMinions);
-			
+
             totalOtherMinions = totalOtherMinions - min.nFocused;
-			
+
             me.MinionArray.push(min);
         }
-		if(totalOtherMinions > 0){
-			this.DistributeFocus(true,totalOtherMinions);
-		}
+        if(totalOtherMinions > 0){
+            this.DistributeFocus(true,totalOtherMinions);
+        }
     }
 
     this.SetStateOfMinions = function(bEnabled) {
@@ -205,10 +205,10 @@ function GameHelper() {
     this.getRandomInt= function(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-	
-	this.HighlightEL = function(el){
-		el.effect("highlight", {}, 250);
-	}
+
+    this.HighlightEL = function(el){
+        el.effect("highlight", {}, 250);
+    }
 }
 
 function ADC() {
@@ -216,11 +216,11 @@ function ADC() {
     this.AS = .625; //AAs per second
     this.sAS = 0; //Seconds per AA
     this.AD = 11;
-	this.Crit=1;
+    this.Crit=1;
     this.sPreCast = 0;
     this.sPostCast = 0;
 
-    this.gold = 100;
+    this.gold = 100000;
     this.minionsKilled = 0;
 
     this.AA = $('#aa');
@@ -228,25 +228,25 @@ function ADC() {
     this.elMinionsKilled = $("#minionsKilled");
     this.elAD = $("#ad");
     this.elAS = $("#as");
-	this.elCrit= $("#crit");
-	this.bCasting=false;
-	
-	this.items=[];
-	
+    this.elCrit= $("#crit");
+    this.bCasting=false;
+
+    this.items=[];
+
     this.SetUp = function() {
         this.SetCastTimes();
         this.UpdateStats();
     }
     this.SetCastTimes = function() {
         me.sPreCast =((1 / me.AS)* (1/3)).toFixed(3)
-		me.sPostCast = ((1 / me.AS) *(2/3)).toFixed(3);; //Seconds per AA;
+        me.sPostCast = ((1 / me.AS) *(2/3)).toFixed(3);; //Seconds per AA;
         me.sAS = (1 / me.AS).toFixed(3);
-		
+
     }
-	
-	this.AANoise = function(){
-		var audioElement = document.createElement('audio');
-        audioElement.setAttribute('src', 'sound/varus_aa.mp3');
+
+    this.AANoise = function(){
+        var audioElement = document.createElement('audio');
+        audioElement.setAttribute('src', 'assets/varus_aa.mp3');
         audioElement.setAttribute('autoplay', 'autoplay');
         //audioElement.load()
 
@@ -254,56 +254,56 @@ function ADC() {
 
         audioElement.addEventListener("load", function() {
             audioElement.play();
-        }, true); 
-	}
-	this.GetCrit = function(){
-		var rng = game.getRandomInt(0,100);
-		if(rng<=me.Crit){
-			return me.AD;
-		} else {
-			return 0;
-		}
-	}
+        }, true);
+    }
+    this.GetCrit = function(){
+        var rng = game.getRandomInt(0,100);
+        if(rng<=me.Crit){
+            return me.AD;
+        } else {
+            return 0;
+        }
+    }
     this.AACommand = function(minion) {
         //Start pre cast animation (bar goes to left)
         //(prevent clicks anywhere else)
-		if(minion.bAlive && !this.bCasting && bPlaying){
-		this.AANoise();
-		this.bCasting = true;
-			this.AA.animate({width: "1px"}, this.getPreCastTimeInMillis(), function() {
-				if(minion.bAlive){
-				var totalAD = me.AD + me.GetCrit();
-					var crittedOn = false;
-					if(totalAD> me.AD){
-						crittedOn = true;
-					}
-					
-					var newWidth = minion.elHP.width() - totalAD;
-					if (newWidth <= 0) {
-						me.KilledMinion(minion);
-					}
-					
-					minion.AA_fromADC(totalAD, crittedOn);
-				}
-			});
+        if(minion.bAlive && !this.bCasting && bPlaying){
+            this.AANoise();
+            this.bCasting = true;
+            this.AA.animate({width: "1px"}, this.getPreCastTimeInMillis(), function() {
+                if(minion.bAlive){
+                    var totalAD = me.AD + me.GetCrit();
+                    var crittedOn = false;
+                    if(totalAD> me.AD){
+                        crittedOn = true;
+                    }
 
-			game.SetStateOfMinions(false);
+                    var newWidth = minion.elHP.width() - totalAD;
+                    if (newWidth <= 0) {
+                        me.KilledMinion(minion);
+                    }
 
-			this.AA.animate({
-				width: "500px"
-			}, this.getPostCastTimeInMillis(), function() {
-				game.SetStateOfMinions(true);
-				me.bCasting=false;
-			});
-		}
-        
+                    minion.AA_fromADC(totalAD, crittedOn);
+                }
+            });
+
+            game.SetStateOfMinions(false);
+
+            this.AA.animate({
+                width: "500px"
+            }, this.getPostCastTimeInMillis(), function() {
+                game.SetStateOfMinions(true);
+                me.bCasting=false;
+            });
+        }
+
     }
 
     this.KilledMinion = function(minion) {
         me.gold += minion.GetGold();
         me.minionsKilled++;
-		game.HighlightEL(me.elGold);
-		game.HighlightEL(me.elMinionsKilled);
+        game.HighlightEL(me.elGold);
+        game.HighlightEL(me.elMinionsKilled);
         me.UpdateStats();
     }
 
@@ -313,45 +313,55 @@ function ADC() {
         me.elMinionsKilled.html(me.minionsKilled+"/"+String(game.nLevel*6));
         me.elAD.html(me.AD);
         me.elAS.html(me.AS);
-		me.elCrit.html(me.Crit);
+        me.elCrit.html(me.Crit);
     }
-	
-	this.AddItem = function(item) {
-		me.items.push(item);
-		me.AD += item.ad;
-		me.AS += ((me.AS *item.as)/100);
-		me.SetCastTimes();
-		me.Crit +=item.crit;
-		//special effects?!?!?
-		//call back function pertaining to each item.
-		
-		
-	}
-	
-	this.FillItems = function(){
-		for(var i=0;i<6;i++){
-			var lehItem = me.items[i];
-			if(lehItem !=null){
-				$("#item_"+i).html("<img style='width:100%;height:100%' src='"+lehItem.pic+"'/>");
-			} else {
-				$("#item_"+i).html("");
-			}	
-		}
-	}
-	
+
+    this.AddItem = function(item) {
+        me.items.push(item);
+        me.AD += item.ad;
+        me.AS += ((me.AS *item.as)/100);
+        me.SetCastTimes();
+        me.Crit +=item.crit;
+        //special effects?!?!?
+        //call back function pertaining to each item.
+    }
+
+    this.RemoveItem = function(item){
+        var index = me.items.indexOf(item);
+        if(index >-1){
+            me.items.splice(index,1);
+        }
+
+        me.AD -=item.ad;
+        me.Crit -=item.Crit;
+
+    }
+
+
+    this.FillItems = function(){
+        for(var i=0;i<6;i++){
+            var lehItem = me.items[i];
+            if(lehItem !=null){
+                $("#item_"+i).html("<img style='width:100%;height:100%' src='"+lehItem.pic+"'/>");
+            } else {
+                $("#item_"+i).html("");
+            }
+        }
+    }
+
     this.getPreCastTimeInMillis = function() {
         return (me.sPreCast) * 1000; // seconds to milliseconds
     }
-	this.getPostCastTimeInMillis = function() {
+    this.getPostCastTimeInMillis = function() {
         return (me.sPostCast) * 1000; // seconds to milliseconds
     }
 }
 
 function Minion(i, type) {
-    
-	var me = this;
-	var rangedPic = "assets/caster.png";
-	var meleePic = "assets/melee.png";
+
+    var me = this;
+    var rangedPic = "assets/caster.png";
+    var meleePic = "assets/melee.png";
     this.Type = type; //ranged or melee
     this.id = i;
     this.bAlive = true;
@@ -365,8 +375,8 @@ function Minion(i, type) {
     this.elHP = this.wrapper.find('#hp');
     this.elSrc = this.wrapper.find('#minion_src');
     this.elFocus = this.wrapper.find('.focus');
-	this.elDmg = this.wrapper.find('#dmg');
-	//hide the dmg right away
+    this.elDmg = this.wrapper.find('#dmg');
+    //hide the dmg right away
 
     this.wrapper.click(function() {
         adc.AACommand(me);
@@ -375,14 +385,14 @@ function Minion(i, type) {
     var MinionAAInterval;
     var MinionAATimeout;
 
-	this.SetUp = function(){
-		if (me.Type == "ranged") {
-           me.elSrc.attr("src",rangedPic);
+    this.SetUp = function(){
+        if (me.Type == "ranged") {
+            me.elSrc.attr("src",rangedPic);
         } else {
-           me.elSrc.attr("src",meleePic);
+            me.elSrc.attr("src",meleePic);
         }
-	}
-	
+    }
+
     this.GetGold = function() {
         if (me.Type = "ranged") {
             return 30;
@@ -403,7 +413,7 @@ function Minion(i, type) {
             } else {
                 me.elHP.width(newWidth);
             }
-		
+
         } else {
             clearTimeout(MinionAAInterval);
             clearInterval(MinionAATimeout);
@@ -411,25 +421,25 @@ function Minion(i, type) {
     }
 
     function AnimateMe() {
-		me.wrapper.effect("highlight", {}, 250);
+        me.wrapper.effect("highlight", {}, 250);
     }
-	function ShowDmg(AD,wasCritted){
-		
-		if(!wasCritted){
-			me.elDmg.html(AD);
-			me.elDmg.fadeTo(100,1, function(){
-				me.elDmg.fadeTo(100,0);
-			});
-		} else {
-			me.elDmg.html("<span class='crithit'>"+AD+"!</span>");
-			me.elDmg.fadeTo(200,1, function(){
-				me.elDmg.fadeTo(200,0);
-			});
-		}		
-	}
+    function ShowDmg(AD,wasCritted){
+
+        if(!wasCritted){
+            me.elDmg.html(AD);
+            me.elDmg.fadeTo(100,1, function(){
+                me.elDmg.fadeTo(100,0);
+            });
+        } else {
+            me.elDmg.html("<span class='crithit'>"+AD+"!</span>");
+            me.elDmg.fadeTo(200,1, function(){
+                me.elDmg.fadeTo(200,0);
+            });
+        }
+    }
     this.AA_fromADC = function(AD, wasCritted) {
         AnimateMe();
-		ShowDmg(AD,wasCritted);
+        ShowDmg(AD,wasCritted);
         HPDrop(AD);
     }
 
