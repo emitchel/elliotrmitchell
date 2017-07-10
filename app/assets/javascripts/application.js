@@ -26,10 +26,3 @@
 //= require master-custom.js
 //= require jquery.cubeportfolio.min.js
 //= require swiper.js
-
-(function ($, window, document, undefined) {
-    'use strict';
-
-
-
-})(jQuery, window, document);

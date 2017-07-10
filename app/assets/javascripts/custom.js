@@ -14,9 +14,6 @@ $(document).ready(function () {
         removePreloader();
     });
 
-    $(document).on('turbolinks:load', function() {
-        removePreloader();
-    })
   //animated scroll menu
     $(window).scroll(function () {
         var scroll = $(window).scrollTop();

@@ -3,3 +3,4 @@
 //= link_directory ../stylesheets 
 //= link_directory ../flaticon
 //= link_directory ../fonts
+//= link_directory ../sounds
