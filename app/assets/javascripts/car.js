@@ -85,8 +85,7 @@ function Car(carName, bot, top, imgId) {
 	
 	//this function should get called every time it's stats are updated
 	this.statsOut = function(bot,top,iq){
-		$("#stats").html(top + " / "+ bot +" / "+iq);
-        $("#stats").effect("highlight",500);
+		$("#stats").html(top + " / "+ bot +" / "+iq).effect("highlight",500);
 	}
 
 	this.updateBot = function(newBot) {
