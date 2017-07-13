@@ -1,3 +1,5 @@
 class CreepController < ApplicationController
-  def creep; end
+  def creep
+    render :layout => 'nothing_layout'
+  end
 end

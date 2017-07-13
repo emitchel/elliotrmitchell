@@ -1,3 +1,5 @@
 class DragracingController < ApplicationController
-  def dragracing; end
+  def dragracing
+    render :layout => 'nothing_layout'
+  end
 end
