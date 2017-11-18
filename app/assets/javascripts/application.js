@@ -26,3 +26,13 @@
 //= require master-custom.js
 //= require jquery.cubeportfolio.min.js
 //= require swiper.js
+//= require modernizr.js
+//= require jquery.scrollTo.js
+//= require jquery.Nav.js
+//= require jquery.sticky.js
+//= require jquery.easyPieChart.js
+//= require vegas.js
+//= require jquery.magnifyPopup.js
+//= require waypoints.js
+//= require jquery.isotope.js
+//= require main_home.js
