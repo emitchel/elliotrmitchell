@@ -94,10 +94,12 @@ $(document).ready(function() {
         
             $('#page-welcome').vegas({
             slides: [
-                { src: 'assets/01.jpg' },
-                { src: 'assets/02.jpg' },
-                { src: 'assets/03.jpg' },
-                { src: 'assets/04.jpg' }
+                { src: 'assets/wp_001.jpg' },
+                { src: 'assets/wp_002.jpg' },
+                { src: 'assets/wp_003.jpg' },
+                { src: 'assets/wp_007.jpg' },
+                { src: 'assets/wp_008.jpg' },
+                { src: 'assets/wp_009.jpg'}
             ],
         overlay: true
     });
