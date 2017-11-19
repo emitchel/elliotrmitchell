@@ -22,6 +22,7 @@ $(document).ready(function() {
             var $container = $('.grid-wrapper');
             $container.isotope({
                 filter: '*',
+                layoutMode : 'fitRows',
                 animationOptions: {
                     duration: 750,
                     easing: 'linear',
@@ -36,6 +37,7 @@ $(document).ready(function() {
                 var selector = $(this).attr('data-filter');
                 $container.isotope({
                     filter: selector,
+                    layoutMode : 'fitRows',
                     animationOptions: {
                         duration: 750,
                         easing: 'linear',
