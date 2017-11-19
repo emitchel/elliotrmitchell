@@ -99,7 +99,7 @@ $(document).ready(function() {
                 { src: 'assets/wp_003.jpg' },
                 { src: 'assets/wp_007.jpg' },
                 { src: 'assets/wp_008.jpg' },
-                { src: 'assets/wp_009.jpg'}
+                { src: 'assets/wp_009.jpg' }
             ],
         overlay: true
     });
