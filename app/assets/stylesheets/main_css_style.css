@@ -8,7 +8,7 @@
    html, body {
     height: 100%;
     width: 100%;
-    font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+    font-family: 'Abel', sans-serif;
     color: #757575;
 }
 img {
@@ -24,7 +24,7 @@ a img {
     border: 0;
 }
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Oxygen', sans-serif;
+    font-family: 'Josefin Sans', sans-serif;
     font-weight: 700;
 }
 /* ==========================================================================
@@ -144,7 +144,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 200px;
     height: 150px;
     vertical-align: top;
-    margin: 20px 20px 20px 0;
+    margin: 20px 20px 20px 0px;
     color: #fff;
     text-align: center;
 }
@@ -272,13 +272,13 @@ h1, h2, h3, h4, h5, h6 {
     cursor: pointer;
 }
 .next {
-    background: url("./next.png");
+    /* background: url("./next.png"); */
     margin-right: 70px;
     right: 0;
     opacity: 0.3;
 }
 .prev {
-    background: url("./prev.png");
+    /* background: url("./prev.png"); */
     margin-left: 70px;
     left: 0;
     opacity: 0.3;
@@ -417,7 +417,6 @@ label.valid {
    ========================================================================== */
 
 .social-icons .btn {
-    margin-right: 15px;
 }
 .social-icons {
     padding-top: 10px;
@@ -568,6 +567,10 @@ label.valid {
      -ms-filter: grayscale(100%);
      filter: grayscale(100%);
      filter: gray; /* IE 6-9 */
+     max-width:200px;
+     max-height:147px;
+     width: auto;
+     height: auto;
   }
 
   img.app:hover {

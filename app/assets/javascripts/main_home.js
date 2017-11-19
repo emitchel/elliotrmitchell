@@ -97,19 +97,17 @@ $(document).ready(function() {
                 { src: 'assets/wp_001.jpg' },
                 { src: 'assets/wp_002.jpg' },
                 { src: 'assets/wp_003.jpg' },
-                { src: 'assets/wp_007.jpg' },
-                { src: 'assets/wp_008.jpg' },
-                { src: 'assets/wp_009.jpg' }
+                { src: 'assets/wp_008.jpg' }
             ],
         overlay: true
     });
     
-        $("#vegas-next").click(function() {
-            $('#page-welcome').vegas('next');
-        });
-        $("#vegas-prev").click(function() {
-           $('#page-welcome').vegas('previous');
-        });
+        // $("#vegas-next").click(function() {
+        //     $('#page-welcome').vegas('next');
+        // });
+        // $("#vegas-prev").click(function() {
+        //    $('#page-welcome').vegas('previous');
+        // });
     
     
     
