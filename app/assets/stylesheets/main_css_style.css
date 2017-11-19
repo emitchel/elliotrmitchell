@@ -116,17 +116,25 @@ h1, h2, h3, h4, h5, h6 {
 }
 #page-experience {
     padding: 75px 0;
-    background: #f7f7f7;
+    background: #fff;
 }
 #page-portfolio {
     padding: 75px 0;
-    background: #fff;
+    background: #f7f7f7;
 }
 #page-contact {
     padding: 75px 0;
 }
 #page-contact .contact-info p {
     font-size: 1.2em;
+}
+
+.page-footer {
+	background: #fff;
+}
+
+.made-by-me{
+    color: #3498db
 }
 /* ==========================================================================
    Portfolio   
@@ -309,6 +317,48 @@ h1, h2, h3, h4, h5, h6 {
     width: 100px;
     height: 2px;
     margin: auto;
+}
+
+
+/**spaces**/
+.space10 {
+    height: 10px;
+}
+
+.space20 {
+    height: 20px;
+}
+
+.space30 {
+    height: 30px;
+}
+
+.space40 {
+    height: 40px;
+}
+
+.space50 {
+    height: 50px;
+}
+
+.space60 {
+    height: 60px;
+}
+
+.space70 {
+    height: 70px;
+}
+
+.space80 {
+    height: 80px;
+}
+
+.space90 {
+    height: 90px;
+}
+
+.space100 {
+    height: 100px;
 }
 .section-subtitle {
     text-align: center;
