@@ -57,7 +57,7 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'sendgrid-ruby'
-
+gem 'sprockets', '~>3.7.2'
 group :production do
   gem 'rails_12factor'
 end
