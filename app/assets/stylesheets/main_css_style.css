@@ -100,7 +100,13 @@ h1, h2, h3, h4, h5, h6 {
     background: #fff;
 }
 #page-profile .profile {
-    margin: 0 20px 20px 0;
+    
+    margin-left: auto;
+    margin-right: auto;
+    
+    margin-bottom: 20px;
+    margin-top: 20px;
+    
     max-width: 300px;
 }
 #page-profile .profile-image{
@@ -119,13 +125,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 #page-experience {
     padding: 75px 0;
-    background: #fff;
+    background-image: url(./pattern.png);
+    background-repeat: repeat;
+    background-color: rgb(244, 244, 244);
 }
 #page-portfolio {
     padding: 75px 0;
-    background-image: url(./pattern.png);
-    background-repeat: repeat;
-    background-color: rgb(244, 244, 244)
+    background: #fff;
 }
 #page-contact {
     padding: 75px 0;
@@ -566,7 +572,12 @@ label.valid {
 
 @media(max-width:992px) {
     #page-profile .profile {
-        margin: 0 auto 20px auto;
+        margin-left: auto;
+        margin-right: auto;
+        
+        margin-bottom: 20px;
+        margin-top: 20px;
+        max-width: 300px;
     }
 }
 @media (max-width: 479px) {
@@ -588,9 +599,6 @@ label.valid {
     }
     #grid {
         text-align: center;
-    }
-    #page-profile .profile {
-        margin: 0 auto 20px auto;
     }
 }
 
