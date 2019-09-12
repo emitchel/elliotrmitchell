@@ -111,6 +111,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 #page-profile .profile-image{
     border: 5px solid #333;
+    
+    max-width: 300px;
 }
 #page-skills {
     padding: 75px 0;
