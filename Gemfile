@@ -62,3 +62,10 @@ group :production do
   gem 'rails_12factor'
 end
 
+# WOW DID YOU FORGET HOW TO DO SHIT AGAIN?
+# gem install bundler (after every ruby upgrade)
+# bundle install (install gems)
+# rake db:create
+# rake db:migrate
+# rake assets:precompile
+
