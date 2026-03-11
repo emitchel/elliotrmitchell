@@ -1,24 +1,46 @@
-# README
+# elliotrmitchell
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Personal portfolio site for Elliot Mitchell — built with [Astro](https://astro.build), hosted on [Cloudflare Pages](https://pages.cloudflare.com).
 
-Things you may want to cover:
+## Pages
 
-* Ruby version
+| URL | File |
+|-----|------|
+| `/` | `src/pages/index.astro` — portfolio |
+| `/creep` | `src/pages/creep.astro` — LoL minion farming game |
+| `/dragracing` | `src/pages/dragracing.astro` — drag racing browser game |
 
-* System dependencies
+## Development
 
-* Configuration
+Install dependencies:
+```bash
+npm install
+```
 
-* Database creation
+Start local dev server (http://localhost:4321):
+```bash
+npm run dev
+```
 
-* Database initialization
+Build for production:
+```bash
+npm run build
+```
 
-* How to run the test suite
+Preview production build:
+```bash
+npm run preview
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+## Deployment
 
-* Deployment instructions
+This site auto-deploys via Cloudflare Pages on every push to `master`.
 
-* ...
+Build config:
+- **Build command:** `npm run build`
+- **Output directory:** `dist`
+- **Node version:** 20
+
+## Assets
+
+Static assets (images, JS, CSS, fonts) live in `public/assets/` and are served at `/assets/*`.
