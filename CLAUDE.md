@@ -92,21 +92,29 @@ Keeping the domain at Namecheap is totally fine as long as Cloudflare controls t
 ---
 
 ### Phase 7 — UI Modernization
-Goal: completely redesign the portfolio with a modern, clean aesthetic. Replace the dated Bootstrap/jQuery template with purpose-built components.
+Goal: multiple distinct visual themes sharing one content spec. Random theme per visitor, subtle easter egg switcher, preference data collection. See **[DESIGN.md](DESIGN.md)** for full brief.
 
-- [ ] Pick a design direction (minimal dark theme, clean light, etc.) — decide before building
-- [ ] Replace Bootstrap with Tailwind CSS (utility-first, no design debt)
-- [ ] Rebuild nav as sticky, mobile-friendly component
-- [ ] Redesign hero/welcome section (ditch Vegas slider, use a clean full-screen intro)
-- [ ] Modernize Skills section — replace EasyPieChart circles with something cleaner (progress bars, tag cloud, or card grid)
-- [ ] Update Skills content — remove outdated items, add current ones
-- [ ] Modernize Portfolio section — card grid with hover effects, filter still works
-- [ ] Update Portfolio content — add recent projects, remove stale ones
-- [ ] Modernize Experience section — timeline layout
-- [ ] Update Experience content — update Microsoft dates, add any new roles
-- [ ] Modernize Contact section
-- [ ] Update footer year (currently says 2021)
-- [ ] Remove all legacy JS libs no longer needed after redesign (jQuery, Bootstrap JS, Vegas, etc.)
+**Step 1 — Lock content (do this first)**
+- [ ] Approve/finalize headline & sub-headline
+- [ ] Approve/finalize bio copy
+- [ ] Confirm Rill Social one-liner + assets situation
+- [ ] Confirm additional work list (add/remove)
+- [ ] Confirm skills list (add/remove)
+- [ ] Decide on phone number visibility
+
+**Step 2 — Build themes (one at a time)**
+- [ ] Create feature branch for redesign
+- [ ] Install Tailwind CSS
+- [ ] Build Theme A (first visual direction — decide after content locked)
+- [ ] Build Theme B
+- [ ] Build Theme C+
+
+**Step 3 — Theme infrastructure**
+- [ ] Easter egg theme switcher component (subtle, not obvious)
+- [ ] localStorage preference persistence
+- [ ] Preference event tracking (Cloudflare Analytics or Worker + KV)
+- [ ] Random theme assignment for new visitors (client JS or Cloudflare Worker)
+- [ ] Remove all legacy JS/CSS from old site (jQuery, Bootstrap, Vegas, EasyPieChart, ~12 plugin files)
 
 ---
 
