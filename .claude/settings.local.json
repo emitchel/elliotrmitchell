@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(npm --version)",
+      "Bash(brew list:*)",
+      "Read(//Users/elliotmitchell/.nvm/versions/node/**)",
+      "Read(//opt/homebrew/bin/**)",
+      "Bash(cp app/assets/images/* public/assets/)",
+      "Bash(cp app/assets/javascripts/*.js public/assets/)",
+      "Bash(cp app/assets/stylesheets/*.css public/assets/)",
+      "Bash(cp app/assets/fonts/* public/assets/)",
+      "Bash(cp app/assets/sounds/*.mp3 public/assets/)",
+      "Bash(cp app/assets/information/*.pdf public/assets/)",
+      "Bash(source ~/.nvm/nvm.sh)",
+      "Bash(nvm use:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}
