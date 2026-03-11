@@ -15,7 +15,20 @@
       "Bash(source ~/.nvm/nvm.sh)",
       "Bash(nvm use:*)",
       "Bash(npm install:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(dig elliotrmitchell.com NS +short)",
+      "Bash(curl -sI https://www.elliotrmitchell.com)",
+      "Bash(ls /Users/elliotmitchell/apps/elliotrmitchell/public/assets/ElliotMitchell*)",
+      "Bash(grep -E '\\\\.\\(jpg|jpeg|png|gif|webp|svg\\)$')",
+      "Bash(curl -sI https://elliotrmitchell.com)",
+      "Bash(curl -sIL http://elliotrmitchell.com)",
+      "Bash(curl -sIL https://www.elliotrmitchell.com)",
+      "Bash(curl -sv https://elliotrmitchell.com)",
+      "Bash(curl -sv https://www.elliotrmitchell.com)",
+      "Bash(curl -sI --max-redirs 10 https://elliotrmitchell.com)",
+      "Bash(curl -sI --max-redirs 10 https://www.elliotrmitchell.com)",
+      "Bash(curl -sI --connect-timeout 10 https://elliotrmitchell.com)",
+      "Bash(curl -sI --connect-timeout 10 https://www.elliotrmitchell.com)"
     ]
   }
 }
