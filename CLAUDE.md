@@ -240,3 +240,8 @@ Nameservers are who's *in charge* of your domain's phone book. Before: Namecheap
 
 - Phone number visible in contact section — decide if still desired to be public
 - Resume PDF is in `public/assets/` — keep it accessible at `/assets/ElliotMitchell_Resume.pdf`
+
+## Helpers
+
+- If GitHub push fails with `RPC failed; HTTP 400 curl 22` on this repo, increase the git HTTP post buffer before retrying:
+  `git config http.postBuffer 524288000`
