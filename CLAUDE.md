@@ -12,12 +12,22 @@ Personal portfolio site for Elliot Mitchell (Mobile/Android Engineer).
 
 ## Routing
 
-| URL           | File                         |
-|---------------|------------------------------|
-| `/`           | `src/pages/index.astro`      |
-| `/creep`      | `src/pages/creep.astro`      |
-| `/dragracing` | `src/pages/dragracing.astro` |
-| `/photos`     | `src/pages/photos.astro`     |
+| URL           | File                              |
+|---------------|-----------------------------------|
+| `/`           | `src/pages/index.astro` — rewrites to active theme via `Astro.rewrite()` |
+| `/1`          | `src/pages/1/index.astro` — Theme 1: Minimal White                       |
+| `/2`          | `src/pages/2/index.astro` — Theme 2: (current active theme)              |
+| `/3`          | `src/pages/3/index.astro` — Legacy site (old Bootstrap/jQuery page)      |
+| `/creep`      | `src/pages/creep.astro`                                                   |
+| `/dragracing` | `src/pages/dragracing.astro`                                              |
+| `/photos`     | `src/pages/photos.astro`                                                  |
+
+**To change the active theme:** edit the `Astro.rewrite()` path in `src/pages/index.astro`. No redirect, no flicker — Astro bakes the target theme's HTML into `index.html` at build time.
+
+**When building a new theme iteration:**
+- Single theme brief and source-of-truth reference: `PORTFOLIO_TEMPLATE.md`
+- Shared theme content module: `src/content/portfolioContent.js`
+- Theme log: `PORTFOLIO_TEMPLATE.md` → `## Theme Log`
 
 ---
 
@@ -91,22 +101,84 @@ Keeping the domain at Namecheap is totally fine as long as Cloudflare controls t
 
 ---
 
-### Phase 7 — UI Modernization
-Goal: completely redesign the portfolio with a modern, clean aesthetic. Replace the dated Bootstrap/jQuery template with purpose-built components.
+### Phase 7 — Theme Building (in progress)
 
-- [ ] Pick a design direction (minimal dark theme, clean light, etc.) — decide before building
-- [ ] Replace Bootstrap with Tailwind CSS (utility-first, no design debt)
-- [ ] Rebuild nav as sticky, mobile-friendly component
-- [ ] Redesign hero/welcome section (ditch Vegas slider, use a clean full-screen intro)
-- [ ] Modernize Skills section — replace EasyPieChart circles with something cleaner (progress bars, tag cloud, or card grid)
-- [ ] Update Skills content — remove outdated items, add current ones
-- [ ] Modernize Portfolio section — card grid with hover effects, filter still works
-- [ ] Update Portfolio content — add recent projects, remove stale ones
-- [ ] Modernize Experience section — timeline layout
-- [ ] Update Experience content — update Microsoft dates, add any new roles
-- [ ] Modernize Contact section
-- [ ] Update footer year (currently says 2021)
-- [ ] Remove all legacy JS libs no longer needed after redesign (jQuery, Bootstrap JS, Vegas, etc.)
+**References (read these before touching anything):**
+- `PORTFOLIO_TEMPLATE.md` — single source of truth for theme rules, content reference, dos/don'ts, and theme log
+- `src/content/portfolioContent.js` — shared theme content consumed by theme pages
+
+---
+
+**7A — Theme building (ongoing)**
+
+Each session: describe or reference a design direction → a new theme gets built at `/N`.
+No content decisions needed unless `PORTFOLIO_TEMPLATE.md` or `src/content/portfolioContent.js` changes.
+Theme log lives in `PORTFOLIO_TEMPLATE.md` → `## Theme Log`.
+
+- [x] Content locked — shared theme content lives in `src/content/portfolioContent.js`
+- [x] Theme 1 built → `/1` (minimal white, rounded cards, phone mockups, staggered pills)
+- [x] Theme 2 built → `/2` (Field Notes — warm editorial, profile-led hero, dense work grid)
+- [ ] Theme 4, 5, N… — describe a direction each session, one at a time
+
+---
+
+**Theme inspiration sources:**
+- [developer-portfolios](https://github.com/emmabostian/developer-portfolios) — curated list of dev portfolio sites, good for reference and new ideas
+- [lamine.cc](https://lamine.cc/) — design reference
+- [nareshkhatri.site](https://www.nareshkhatri.site/) — design reference
+- Add more here over time as you find them
+
+---
+
+**Theme ideas backlog (unbuilt):**
+
+**Instagram-like feed theme**
+- "Stories" row at the top — each story is a portfolio project, story thumbnail is the project asset image
+- Below that, a scrollable "feed" of photo posts — each post uses one of the profile photos as a full-bleed background with a `rgba(0,0,0,0.5)` overlay
+- Normal portfolio content sections (identity, skills, experience, contact) are rendered as post overlays on top of the photo — so it looks like posts in a feed but surfaces all the standard content
+- Feels like an Instagram profile page but the content is the portfolio
+
+**Compact two-panel theme**
+- Two main regions of the screen, everything compact and straight to the point — no scroll padding, no long sections
+- Both panels visible at once (or near it), dense but clean
+- Details TBD — explore layout options when building
+
+---
+
+**7B — Theme switcher easter egg (design decided, wiring deferred)**
+
+The goal: every theme page has a subtle, unobtrusive floating component that lets visitors know what they're looking at, shuffle to a different theme, and optionally lock in their preference. New visitors always get a random theme.
+
+**Component behavior (to build — `src/components/ThemeSwitcher.astro`):**
+- Floats subtly on every theme page — small, corner-positioned, not obvious
+- Shows: `Theme #N` label
+- Has a shuffle button → picks a random different `/N` and navigates there
+- Has a "stay here" toggle → writes `preferred_theme=N` to `localStorage`
+- On page load: if `localStorage` has a preference, show it subtly ("your saved theme")
+- Hover to reveal, or always-visible but minimal — exact treatment up to the theme
+
+**Random assignment for new visitors:**
+- No `localStorage` preference = randomly pick a theme number and redirect on load
+- Implementation options (pick one when building):
+  - **Client-side JS** (simplest): on `index.astro` load, read localStorage or pick random N, redirect to `/N`. Small flash risk.
+  - **Cloudflare Worker** (cleanest): intercepts request to `/`, sets a `theme` cookie at the edge, serves the right page with zero flash. No redirect needed.
+- Recommendation: start with client-side JS at `/` for now, upgrade to Worker later
+
+**Analytics — what to track:**
+- Theme viewed on page load (which `/N` was visited)
+- Shuffle event (from which theme, to which theme)
+- Preference saved event (which theme was locked in)
+
+**Analytics implementation options (pick one when building):**
+- **Cloudflare Web Analytics custom events** — free, already installed, just call `window.cfAnalytics.pushEvent(...)` — simplest
+- **Cloudflare Worker + KV** — Worker receives a POST with event data, writes to KV store — queryable later, slightly more setup
+- **Query param on shuffle** — append `?from=1&to=3` on shuffle navigations — shows up in Cloudflare Analytics path data automatically, zero code
+
+**Open questions before building 7B:**
+- [ ] How visible should the switcher be? Hover-only tooltip vs always-visible small badge?
+- [ ] Should "shuffle" be instant navigate or a smooth CSS transition between themes?
+- [ ] Which analytics approach? (recommendation: Cloudflare custom events — already wired up)
+- [ ] How many themes need to exist before wiring up random assignment at `/`?
 
 ---
 
@@ -192,3 +264,8 @@ Nameservers are who's *in charge* of your domain's phone book. Before: Namecheap
 
 - Phone number visible in contact section — decide if still desired to be public
 - Resume PDF is in `public/assets/` — keep it accessible at `/assets/ElliotMitchell_Resume.pdf`
+
+## Helpers
+
+- If GitHub push fails with `RPC failed; HTTP 400 curl 22` on this repo, increase the git HTTP post buffer before retrying:
+  `git config http.postBuffer 524288000`

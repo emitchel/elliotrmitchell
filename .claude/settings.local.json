@@ -28,7 +28,15 @@
       "Bash(curl -sI --max-redirs 10 https://elliotrmitchell.com)",
       "Bash(curl -sI --max-redirs 10 https://www.elliotrmitchell.com)",
       "Bash(curl -sI --connect-timeout 10 https://elliotrmitchell.com)",
-      "Bash(curl -sI --connect-timeout 10 https://www.elliotrmitchell.com)"
+      "Bash(curl -sI --connect-timeout 10 https://www.elliotrmitchell.com)",
+      "Bash(ls /Users/elliotmitchell/apps/elliotrmitchell/*.png /Users/elliotmitchell/apps/elliotrmitchell/*.jpg /Users/elliotmitchell/apps/elliotrmitchell/*.jpeg)",
+      "Bash(grep -iE '\\\\.\\(png|jpg|jpeg|webp\\)$')",
+      "Bash(gh api:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(node -e \"console.log\\(require\\(''/Users/elliotmitchell/apps/elliotrmitchell/node_modules/astro/package.json''\\).version\\)\")",
+      "Bash(ls /Users/elliotmitchell/apps/elliotrmitchell/public/assets/*.png /Users/elliotmitchell/apps/elliotrmitchell/public/assets/*.webp)",
+      "Bash(xargs -n1 basename)"
     ]
   }
 }

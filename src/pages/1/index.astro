@@ -1,0 +1,744 @@
+---
+// Theme 1 — Minimal White
+import { Image } from 'astro:assets';
+import PhoneMockup from '../../components/PhoneMockup.astro';
+import ThemeSwitcher from '../../components/ThemeSwitcher.astro';
+import {
+  contactDetails,
+  experienceTimeline,
+  openSourceLinks,
+  portfolioIdentity,
+  portfolioMetrics,
+  profileImages,
+  skillTags,
+  workItems,
+  writingArticles,
+} from '../../content/portfolioContent.js';
+
+const heroImage = profileImages.profile2;
+const aboutImage = profileImages.profile5;
+const primaryArticle = writingArticles[0];
+const emailHref = `mailto:${contactDetails.email}`;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{portfolioIdentity.name} — Director of Mobile · Android Engineer</title>
+  <meta name="description" content={`${portfolioIdentity.name} — Director of Mobile and Android Engineer with ${portfolioMetrics.yearsBuildingAndroid} years building apps at scale.`} />
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/fontawesome.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f9f9f7;
+      --surface: #ffffff;
+      --border: #e8e8e5;
+      --text: #0a0a0a;
+      --muted: #737373;
+      --accent: #0a0a0a;
+      --radius: 20px;
+      --max: 960px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(249, 249, 247, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-name {
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ─── SECTIONS ─── */
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 40px 0;
+    }
+
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 48px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      padding: 96px 0 72px;
+    }
+    .hero-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 64px;
+    }
+    .hero-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .hero-photo-wrap {
+      flex-shrink: 0;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    }
+    .hero-photo-wrap :global(.hero-photo) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+    .hero-eyebrow {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .hero-name {
+      font-size: clamp(48px, 8vw, 80px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .hero-title {
+      font-size: clamp(18px, 3vw, 26px);
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+      margin-bottom: 28px;
+    }
+    .hero-sub {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--text);
+      max-width: 560px;
+      margin-bottom: 40px;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--text);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 24px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.8; }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 24px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--text); background: var(--surface); }
+
+    /* ─── ABOUT ─── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+    :global(.about-photo) {
+      width: 180px;
+      height: 180px;
+      border-radius: 16px;
+      object-fit: cover;
+      object-position: center -48px;
+      border: 1px solid var(--border);
+    }
+    .about-text h2 {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .about-text p {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* ─── PORTFOLIO ─── */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .portfolio-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .portfolio-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .portfolio-info {
+      text-align: center;
+      width: 100%;
+    }
+    .portfolio-name {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+    .portfolio-name a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .portfolio-name a:hover { text-decoration: underline; }
+    .portfolio-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ─── SKILLS ─── */
+    .skills-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .skill-pill {
+      display: inline-flex;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 8px 16px;
+      cursor: default;
+      transition: background 0.18s, color 0.18s, border-color 0.18s, transform 0.18s;
+      opacity: 0;
+      transform: scale(0.92);
+    }
+    .skill-pill.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .skill-pill:hover {
+      background: var(--text);
+      color: #fff;
+      border-color: var(--text);
+      transform: scale(1.04);
+    }
+
+    /* ─── TIMELINE ─── */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 24px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .timeline-item:last-child { border-bottom: none; }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 159px;
+      top: 32px;
+      width: 8px;
+      height: 8px;
+      background: var(--text);
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      outline: 1px solid var(--text);
+    }
+    .timeline-dates {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      padding-top: 4px;
+      text-align: right;
+      padding-right: 28px;
+    }
+    .timeline-content h3 {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 2px;
+    }
+    .timeline-role {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .timeline-note {
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ─── OPEN SOURCE ─── */
+    .oss-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .oss-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+      transition: gap 0.2s;
+    }
+    .oss-link:last-child { border-bottom: none; }
+    .oss-link:hover { gap: 14px; }
+    .oss-icon {
+      width: 18px;
+      height: 18px;
+      opacity: 0.4;
+      flex-shrink: 0;
+    }
+    .oss-arrow {
+      margin-left: auto;
+      color: var(--muted);
+      font-size: 16px;
+      transition: transform 0.2s;
+    }
+    .oss-link:hover .oss-arrow { transform: translate(3px, -3px); }
+
+    /* ─── WRITING ─── */
+    .article-card {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      text-decoration: none;
+      color: var(--text);
+      background: var(--bg);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .article-card:hover {
+      border-color: var(--text);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+    .article-pub {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .article-title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1.4;
+    }
+    .article-arrow {
+      margin-left: auto;
+      font-size: 20px;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .article-card:hover .article-arrow { transform: translate(3px, -3px); }
+
+    /* ─── CONTACT ─── */
+    #contact .section-card {
+      text-align: center;
+    }
+    .contact-heading {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+    .contact-sub {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      padding: 10px 20px;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .contact-link:hover { border-color: var(--text); background: var(--bg); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ─── SCROLL FADE ─── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 720px) {
+      .hero-inner { flex-direction: column-reverse; gap: 32px; }
+      .hero-photo-wrap { width: 160px; height: 160px; }
+      .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
+      .about-grid { grid-template-columns: 1fr; }
+      :global(.about-photo) { width: 120px; height: 120px; }
+      .timeline-item { grid-template-columns: 1fr; gap: 4px; }
+      .timeline-item::before { display: none; }
+      .timeline-dates { text-align: left; padding-right: 0; }
+      .section-card { padding: 28px 24px; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 480px) {
+      .portfolio-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-name" href="#hero">{portfolioIdentity.name}</a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#portfolio">Work</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <p class="hero-eyebrow">Mobile leadership and product engineering</p>
+        <h1 class="hero-name">{portfolioIdentity.name.split(' ')[0]}<br />{portfolioIdentity.name.split(' ').slice(1).join(' ')}</h1>
+        <p class="hero-title">{portfolioIdentity.headline}</p>
+        <p class="hero-sub">{portfolioIdentity.subheadline}</p>
+      </div>
+      <div class="hero-photo-wrap">
+          <Image class="hero-photo" src={heroImage.src} width={heroImage.width} height={heroImage.height} alt={portfolioIdentity.name} />
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="section-card fade-in">
+        <p class="section-label">About</p>
+        <div class="about-grid">
+          <Image class="about-photo" src={aboutImage.src} width={aboutImage.width} height={aboutImage.height} alt={portfolioIdentity.name} />
+          <div class="about-text">
+            <h2>Director of Mobile.<br>Android architect.<br>Still in the code.</h2>
+            <p style="margin-top: 16px;">I've been the IC building the app, and I've been the manager shipping the team. Currently Director of Mobile at Lucra Sports, where I built the Android app end-to-end in 6 months and architected an SDK for third-party distribution — while leading the team doing it. I've been writing Android for {portfolioMetrics.yearsBuildingAndroid} years and I prefer doing both at once.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio">
+    <div class="container">
+      <div class="section-card fade-in">
+        <p class="section-label">Work</p>
+        <div class="portfolio-grid">
+          {workItems.map((project) => (
+            <div class="portfolio-item">
+              <PhoneMockup
+                src={project.asset}
+                alt={project.name}
+                imageWidth={project.assetWidth}
+                imageHeight={project.assetHeight}
+              />
+              <div class="portfolio-info">
+                <p class="portfolio-name"><a href={project.link} target="_blank" rel="noopener">{project.name}</a></p>
+                <p class="portfolio-desc">{project.message}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Open Source -->
+        <div style="margin-top: 48px; padding-top: 40px; border-top: 1px solid var(--border);">
+          <p class="section-label">Open Source</p>
+          <div class="oss-list">
+            {openSourceLinks.map((link) => (
+              <a class="oss-link" href={link} target="_blank" rel="noopener">
+              <svg class="oss-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              {link.split('/').at(-1)}
+              <span class="oss-arrow">↗</span>
+            </a>
+            ))}
+          </div>
+        </div>
+
+        <!-- Writing -->
+        <div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--border);">
+          <p class="section-label">Writing</p>
+          <a class="article-card" href={primaryArticle.link} target="_blank" rel="noopener">
+            <div>
+              <p class="article-pub">{primaryArticle.publication} · {primaryArticle.source}</p>
+              <p class="article-title">{primaryArticle.title}</p>
+            </div>
+            <span class="article-arrow">↗</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="container">
+      <div class="section-card fade-in">
+        <p class="section-label">Skills</p>
+        <div class="skills-cloud" id="skillsCloud">
+          {skillTags.map((skill) => (
+            <span class="skill-pill">{skill}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="container">
+      <div class="section-card fade-in">
+        <p class="section-label">Experience</p>
+        <div class="timeline">
+          {experienceTimeline.map((item) => (
+            <div class="timeline-item">
+              <div class="timeline-dates">{item.dates}</div>
+              <div class="timeline-content">
+                <h3>{item.company}</h3>
+                <p class="timeline-role">{item.role}</p>
+                {item.note && <p class="timeline-note">{item.note}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <div class="section-card fade-in">
+        <p class="contact-heading">Find me online.</p>
+        <div class="contact-links">
+          <a class="contact-link" href={emailHref}>
+            <i class="fa fa-envelope-o"></i>
+            Email
+          </a>
+          <a class="contact-link" href={contactDetails.stackOverflow} target="_blank" rel="noopener">
+            <i class="fa fa-stack-overflow"></i>
+            Stack Overflow
+          </a>
+          <a class="contact-link" href={contactDetails.linkedin} target="_blank" rel="noopener">
+            <i class="fa fa-linkedin-square"></i>
+            LinkedIn
+          </a>
+          <a class="contact-link" href={contactDetails.github} target="_blank" rel="noopener">
+            <i class="fa fa-github"></i>
+            GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Built by me. © 2026.
+  </footer>
+
+  <script>
+    // scroll fade-in for sections
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // staggered skill pills
+    const skillObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const pills = entry.target.querySelectorAll('.skill-pill');
+          pills.forEach((pill, i) => {
+            setTimeout(() => pill.classList.add('visible'), i * 35);
+          });
+          skillObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    const cloud = document.getElementById('skillsCloud');
+    if (cloud) skillObserver.observe(cloud);
+
+    // staggered portfolio items
+    const portObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const items = entry.target.querySelectorAll('.portfolio-item');
+          items.forEach((item, i) => {
+            setTimeout(() => item.classList.add('visible'), i * 80);
+          });
+          portObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.05 });
+
+    document.querySelectorAll('.portfolio-grid').forEach(el => portObserver.observe(el));
+  </script>
+
+  <ThemeSwitcher
+    themeNumber={1}
+    fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
+    primaryColor="#f9f9f7"
+    accentColor="#0a0a0a"
+  />
+</body>
+</html>
