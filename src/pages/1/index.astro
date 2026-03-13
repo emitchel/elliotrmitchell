@@ -1,5 +1,6 @@
 ---
 // Theme 1 — Minimal White
+import { Image } from 'astro:assets';
 import PhoneMockup from '../../components/PhoneMockup.astro';
 import ThemeSwitcher from '../../components/ThemeSwitcher.astro';
 import {
@@ -14,7 +15,8 @@ import {
   writingArticles,
 } from '../../content/portfolioContent.js';
 
-const profileImage = profileImages.profile1;
+const heroImage = profileImages.profile2;
+const aboutImage = profileImages.profile5;
 const primaryArticle = writingArticles[0];
 const emailHref = `mailto:${contactDetails.email}`;
 ---
@@ -28,7 +30,7 @@ const emailHref = `mailto:${contactDetails.email}`;
   <link rel="icon" type="image/png" href="/assets/favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/fontawesome.css" />
 
   <style>
@@ -48,7 +50,7 @@ const emailHref = `mailto:${contactDetails.email}`;
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       font-size: 16px;
@@ -105,7 +107,7 @@ const emailHref = `mailto:${contactDetails.email}`;
     }
 
     section {
-      padding: 80px 0;
+      padding: 40px 0;
     }
 
     .section-card {
@@ -132,6 +134,29 @@ const emailHref = `mailto:${contactDetails.email}`;
       max-width: var(--max);
       margin: 0 auto;
       padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 64px;
+    }
+    .hero-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .hero-photo-wrap {
+      flex-shrink: 0;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    }
+    .hero-photo-wrap :global(.hero-photo) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
     }
     .hero-eyebrow {
       font-size: 13px;
@@ -205,12 +230,12 @@ const emailHref = `mailto:${contactDetails.email}`;
       gap: 40px;
       align-items: start;
     }
-    .about-photo {
+    :global(.about-photo) {
       width: 180px;
       height: 180px;
       border-radius: 16px;
       object-fit: cover;
-      object-position: top;
+      object-position: center -48px;
       border: 1px solid var(--border);
     }
     .about-text h2 {
@@ -249,19 +274,6 @@ const emailHref = `mailto:${contactDetails.email}`;
     .portfolio-info {
       text-align: center;
       width: 100%;
-    }
-    .portfolio-type {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--muted);
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      padding: 3px 10px;
-      margin-bottom: 8px;
     }
     .portfolio-name {
       font-size: 15px;
@@ -496,9 +508,11 @@ const emailHref = `mailto:${contactDetails.email}`;
 
     /* ─── RESPONSIVE ─── */
     @media (max-width: 720px) {
+      .hero-inner { flex-direction: column-reverse; gap: 32px; }
+      .hero-photo-wrap { width: 160px; height: 160px; }
       .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
       .about-grid { grid-template-columns: 1fr; }
-      .about-photo { width: 120px; height: 120px; }
+      :global(.about-photo) { width: 120px; height: 120px; }
       .timeline-item { grid-template-columns: 1fr; gap: 4px; }
       .timeline-item::before { display: none; }
       .timeline-dates { text-align: left; padding-right: 0; }
@@ -529,10 +543,15 @@ const emailHref = `mailto:${contactDetails.email}`;
   <!-- HERO -->
   <section id="hero">
     <div class="hero-inner">
-      <p class="hero-eyebrow">Mobile leadership and product engineering</p>
-      <h1 class="hero-name">{portfolioIdentity.name.split(' ')[0]}<br />{portfolioIdentity.name.split(' ').slice(1).join(' ')}</h1>
-      <p class="hero-title">{portfolioIdentity.headline}</p>
-      <p class="hero-sub">{portfolioIdentity.subheadline}</p>
+      <div class="hero-content">
+        <p class="hero-eyebrow">Mobile leadership and product engineering</p>
+        <h1 class="hero-name">{portfolioIdentity.name.split(' ')[0]}<br />{portfolioIdentity.name.split(' ').slice(1).join(' ')}</h1>
+        <p class="hero-title">{portfolioIdentity.headline}</p>
+        <p class="hero-sub">{portfolioIdentity.subheadline}</p>
+      </div>
+      <div class="hero-photo-wrap">
+          <Image class="hero-photo" src={heroImage.src} width={heroImage.width} height={heroImage.height} alt={portfolioIdentity.name} />
+      </div>
     </div>
   </section>
 
@@ -542,7 +561,7 @@ const emailHref = `mailto:${contactDetails.email}`;
       <div class="section-card fade-in">
         <p class="section-label">About</p>
         <div class="about-grid">
-          <img class="about-photo" src={profileImage} alt={portfolioIdentity.name} />
+          <Image class="about-photo" src={aboutImage.src} width={aboutImage.width} height={aboutImage.height} alt={portfolioIdentity.name} />
           <div class="about-text">
             <h2>Director of Mobile.<br>Android architect.<br>Still in the code.</h2>
             <p style="margin-top: 16px;">I've been the IC building the app, and I've been the manager shipping the team. Currently Director of Mobile at Lucra Sports, where I built the Android app end-to-end in 6 months and architected an SDK for third-party distribution — while leading the team doing it. I've been writing Android for {portfolioMetrics.yearsBuildingAndroid} years and I prefer doing both at once.</p>
@@ -560,9 +579,13 @@ const emailHref = `mailto:${contactDetails.email}`;
         <div class="portfolio-grid">
           {workItems.map((project) => (
             <div class="portfolio-item">
-              <PhoneMockup src={project.asset} alt={project.name} />
+              <PhoneMockup
+                src={project.asset}
+                alt={project.name}
+                imageWidth={project.assetWidth}
+                imageHeight={project.assetHeight}
+              />
               <div class="portfolio-info">
-                <span class="portfolio-type">{project.type}</span>
                 <p class="portfolio-name"><a href={project.link} target="_blank" rel="noopener">{project.name}</a></p>
                 <p class="portfolio-desc">{project.message}</p>
               </div>
@@ -713,7 +736,7 @@ const emailHref = `mailto:${contactDetails.email}`;
 
   <ThemeSwitcher
     themeNumber={1}
-    fontFamily="'Inter', system-ui, sans-serif"
+    fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
     primaryColor="#f9f9f7"
     accentColor="#0a0a0a"
   />

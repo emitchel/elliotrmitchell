@@ -117,7 +117,31 @@ Theme log lives in `PORTFOLIO_TEMPLATE.md` → `## Theme Log`.
 
 - [x] Content locked — shared theme content lives in `src/content/portfolioContent.js`
 - [x] Theme 1 built → `/1` (minimal white, rounded cards, phone mockups, staggered pills)
-- [ ] Theme 2, 3, N… — describe a direction each session, one at a time
+- [x] Theme 2 built → `/2` (Field Notes — warm editorial, profile-led hero, dense work grid)
+- [ ] Theme 4, 5, N… — describe a direction each session, one at a time
+
+---
+
+**Theme inspiration sources:**
+- [developer-portfolios](https://github.com/emmabostian/developer-portfolios) — curated list of dev portfolio sites, good for reference and new ideas
+- [lamine.cc](https://lamine.cc/) — design reference
+- [nareshkhatri.site](https://www.nareshkhatri.site/) — design reference
+- Add more here over time as you find them
+
+---
+
+**Theme ideas backlog (unbuilt):**
+
+**Instagram-like feed theme**
+- "Stories" row at the top — each story is a portfolio project, story thumbnail is the project asset image
+- Below that, a scrollable "feed" of photo posts — each post uses one of the profile photos as a full-bleed background with a `rgba(0,0,0,0.5)` overlay
+- Normal portfolio content sections (identity, skills, experience, contact) are rendered as post overlays on top of the photo — so it looks like posts in a feed but surfaces all the standard content
+- Feels like an Instagram profile page but the content is the portfolio
+
+**Compact two-panel theme**
+- Two main regions of the screen, everything compact and straight to the point — no scroll padding, no long sections
+- Both panels visible at once (or near it), dense but clean
+- Details TBD — explore layout options when building
 
 ---
 

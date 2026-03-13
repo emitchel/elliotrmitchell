@@ -1,11 +1,15 @@
 ---
+import { Image } from 'astro:assets';
+
 interface Props {
   src: string;
   alt: string;
   width?: number; // px, default 200 — height auto-derived at exact 9:16
+  imageWidth: number;
+  imageHeight: number;
 }
 
-const { src, alt, width = 200 } = Astro.props;
+const { src, alt, width = 200, imageWidth, imageHeight } = Astro.props;
 ---
 
 <div class="phone-frame" style={`--phone-width: ${width}px`}>
@@ -13,7 +17,7 @@ const { src, alt, width = 200 } = Astro.props;
   <span class="btn-vol"></span>
   <span class="btn-power"></span>
   <div class="phone-screen">
-    <img src={src} alt={alt} />
+    <Image class="phone-image" src={src} alt={alt} width={imageWidth} height={imageHeight} />
   </div>
 </div>
 
@@ -99,7 +103,7 @@ const { src, alt, width = 200 } = Astro.props;
     background: #1a1a1a;
   }
 
-  .phone-screen img {
+  .phone-screen :global(.phone-image) {
     width: 100%;
     height: 100%;
     object-fit: cover;

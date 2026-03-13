@@ -1,3 +1,6 @@
+---
+import { Image } from 'astro:assets';
+---
 <!DOCTYPE html>
 <html class="no-js">
 <head>
@@ -100,7 +103,7 @@
       </header>
       <div class="row">
         <div class="col-md-12">
-          <div class="profile centered"><img src="/assets/portrait.jpg" alt="profile" class="profile-image img-responsive center-block" /></div>
+          <div class="profile centered"><Image src="/assets/portrait.jpg" width={594} height={834} alt="profile" class="profile-image img-responsive center-block" /></div>
         </div>
       </div>
       <div class="row">
@@ -180,18 +183,18 @@
         </div>
         <div>
           <ul id="grid" class="grid-wrapper">
-            <li class="mix android"><a href="https://play.google.com/store/apps/details?id=com.livesafe.activities&hl=en_US&gl=US"><img class="app" src="/assets/portfolio_livesafe.png" alt="LiveSafe"></a></li>
-            <li class="mix android"><a href="https://play.google.com/store/apps/details?id=com.outdoorsy.owner&hl=en_US&gl=US"><img class="app" src="/assets/portfolio_outdoorsy.png" alt="Outdoorsy"></a></li>
-            <li class="mix android"><a href="https://play.google.com/store/apps/details?id=com.lensdistortions.ld&hl=en_US"><img class="app" src="/assets/lensdistortions.png" alt="Lens Distortions"></a></li>
-            <li class="mix android"><a href="https://www.machenergy.com/"><img class="app" src="/assets/portfolio_mach.png" alt="Mach Energy"></a></li>
-            <li class="mix android"><a href="https://www.producthunt.com/posts/cryptonomy-2-0"><img class="app" src="/assets/cryptonomy.png" alt="Cryptonomy"></a></li>
-            <li class="mix android"><a href="https://play.google.com/store/apps/details?id=sandhills.hosteddealerapp.plainsag"><img class="app" src="/assets/sandhills.png" alt="Sandhills"></a></li>
-            <li class="mix android"><a href="https://play.google.com/store/apps/details?id=com.varsitytutors.tutoringtools&hl=en"><img class="app" src="/assets/varsitytutors.png" alt="Varsity Tutors"></a></li>
-            <li class="mix android"><a href="https://github.com/emitchel/AndroidMVVMCoroutines"><img class="app" src="/assets/artists.png" alt="MVVM Coroutines"></a></li>
-            <li class="mix android"><a href="https://github.com/emitchel/Umbrella"><img class="app" src="/assets/umbrella.png" alt="Umbrella"></a></li>
-            <li class="mix android"><a href="https://play.google.com/store/apps/details?id=erm.udraw"><img class="app" src="/assets/udraw_color.png" alt="uDraw"></a></li>
-            <li class="mix web"><a href="https://www.4ccontractor.com"><img class="app" src="/assets/4c-color.png" alt="4C Contractor"></a></li>
-            <li class="mix article"><a href="https://medium.com/@elliot.r.mitchell/imagining-your-repository-layer-with-coroutines-7ee052ee4caa"><img class="app" src="/assets/mediumarticle1.png" alt="Medium Article"></a></li>
+            <li class="mix android"><a href="https://play.google.com/store/apps/details?id=com.livesafe.activities&hl=en_US&gl=US"><Image class="app" src="/assets/portfolio_livesafe.png" width={498} height={886} alt="LiveSafe" /></a></li>
+            <li class="mix android"><a href="https://play.google.com/store/apps/details?id=com.outdoorsy.owner&hl=en_US&gl=US"><Image class="app" src="/assets/portfolio_outdoorsy.png" width={301} height={553} alt="Outdoorsy" /></a></li>
+            <li class="mix android"><a href="https://play.google.com/store/apps/details?id=com.lensdistortions.ld&hl=en_US"><Image class="app" src="/assets/lensdistortions.png" width={714} height={1450} alt="Lens Distortions" /></a></li>
+            <li class="mix android"><a href="https://www.machenergy.com/"><Image class="app" src="/assets/portfolio_mach.png" width={1080} height={1920} alt="Mach Energy" /></a></li>
+            <li class="mix android"><a href="https://www.producthunt.com/posts/cryptonomy-2-0"><Image class="app" src="/assets/cryptonomy.png" width={200} height={345} alt="Cryptonomy" /></a></li>
+            <li class="mix android"><a href="https://play.google.com/store/apps/details?id=sandhills.hosteddealerapp.plainsag"><Image class="app" src="/assets/sandhills.png" width={200} height={337} alt="Sandhills" /></a></li>
+            <li class="mix android"><a href="https://play.google.com/store/apps/details?id=com.varsitytutors.tutoringtools&hl=en"><Image class="app" src="/assets/varsitytutors.png" width={200} height={358} alt="Varsity Tutors" /></a></li>
+            <li class="mix android"><a href="https://github.com/emitchel/AndroidMVVMCoroutines"><Image class="app" src="/assets/artists.png" width={1080} height={1920} alt="MVVM Coroutines" /></a></li>
+            <li class="mix android"><a href="https://github.com/emitchel/Umbrella"><Image class="app" src="/assets/umbrella.png" width={1080} height={1920} alt="Umbrella" /></a></li>
+            <li class="mix android"><a href="https://play.google.com/store/apps/details?id=erm.udraw"><Image class="app" src="/assets/udraw_color.png" width={200} height={356} alt="uDraw" /></a></li>
+            <li class="mix web"><a href="https://www.4ccontractor.com"><Image class="app" src="/assets/4c-color.png" width={200} height={228} alt="4C Contractor" /></a></li>
+            <li class="mix article"><a href="https://medium.com/@elliot.r.mitchell/imagining-your-repository-layer-with-coroutines-7ee052ee4caa"><Image class="app" src="/assets/mediumarticle1.png" width={1438} height={1370} alt="Medium Article" /></a></li>
           </ul>
         </div>
       </div>
@@ -334,7 +337,7 @@
       <div class="space20"></div>
       <div class="row" style="text-align:center">
         <div class="col-md-4 col-md-offset-4">
-          <img src="/assets/erm_256x256.png" alt="erm" class="img-rounded" height="64" width="64" />
+          <Image src="/assets/erm_256x256.png" alt="erm" class="img-rounded" width={64} height={64} />
         </div>
       </div>
       <div class="space80"></div>

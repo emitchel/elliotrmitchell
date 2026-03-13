@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import {
   contactDetails,
   experienceTimeline,
@@ -464,7 +465,7 @@ const page2Contact = theme2Content.contact;
         box-shadow: 0 16px 28px rgba(29, 27, 25, 0.14);
       }
 
-      .work-media img {
+      .work-media .work-image {
         width: 100%;
         height: 100%;
         object-fit: cover;
@@ -473,11 +474,11 @@ const page2Contact = theme2Content.contact;
         animation: work-pan 18s ease-in-out infinite alternate;
       }
 
-      .work-card:nth-child(2n) .work-media img {
+      .work-card:nth-child(2n) .work-media .work-image {
         animation-duration: 22s;
       }
 
-      .work-card:nth-child(3n) .work-media img {
+      .work-card:nth-child(3n) .work-media .work-image {
         animation-duration: 20s;
       }
 
@@ -855,7 +856,7 @@ const page2Contact = theme2Content.contact;
 
           <aside class="hero-panel" aria-label="Profile">
             <div class="hero-photo-wrap">
-              <img class="hero-photo" src={profileImage} alt={portfolioIdentity.name} />
+              <Image class="hero-photo" src={profileImage.src} width={profileImage.width} height={profileImage.height} alt={portfolioIdentity.name} />
             </div>
             <div class="hero-panel-copy">
               <p class="panel-kicker">{page2Hero.currentFocusLabel}</p>
@@ -898,7 +899,14 @@ const page2Contact = theme2Content.contact;
                   <a class="work-card" href={project.link} target="_blank" rel="noopener noreferrer">
                     <div class="work-thumb">
                       <div class="work-media">
-                        <img src={project.asset} alt={project.name} loading="lazy" />
+                        <Image
+                          class="work-image"
+                          src={project.asset}
+                          width={project.assetWidth}
+                          height={project.assetHeight}
+                          alt={project.name}
+                          loading="lazy"
+                        />
                       </div>
                     </div>
                     <div>

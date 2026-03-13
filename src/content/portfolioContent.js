@@ -5,14 +5,14 @@ const yearsBuildingAndroid = currentYear - androidCareerStartYear;
 const recentLeadershipYears = currentYear - leadershipStartYear;
 
 export const profileImages = {
-  profile1: "/assets/profile_1.jpg",
-  profile2: "/assets/profile_2.jpg",
-  profile3: "/assets/profile_3.jpg",
-  profile4: "/assets/profile_4.jpg",
-  profile5: "/assets/profile_5.jpg",
-  profile6: "/assets/profile_6.jpg",
-  profile7: "/assets/profile_7.jpg",
-  profile8: "/assets/profile_8.jpg",
+  profile1: { src: "/assets/profile_1.jpg", width: 6000, height: 3376 },
+  profile2: { src: "/assets/profile_2.jpg", width: 6000, height: 3376 },
+  profile3: { src: "/assets/profile_3.jpg", width: 1152, height: 2048 },
+  profile4: { src: "/assets/profile_4.jpg", width: 6000, height: 3376 },
+  profile5: { src: "/assets/profile_5.jpg", width: 1152, height: 2048 },
+  profile6: { src: "/assets/profile_6.jpg", width: 4032, height: 3024 },
+  profile7: { src: "/assets/profile_7.jpg", width: 4032, height: 2268 },
+  profile8: { src: "/assets/profile_8.jpg", width: 4032, height: 2268 },
 };
 
 export const workItems = [
@@ -21,6 +21,8 @@ export const workItems = [
     type: "Freelance",
     message: "A social hangout app with groups, events, and messaging",
     asset: "/assets/portfolio_rill.png",
+    assetWidth: 1008,
+    assetHeight: 2244,
     link: "https://play.google.com/store/apps/details?id=com.rill",
   },
   {
@@ -28,6 +30,8 @@ export const workItems = [
     type: "Freelance",
     message: "World class photo editor, 5M+ downloads",
     asset: "/assets/portfolio_lensdistortions.png",
+    assetWidth: 826,
+    assetHeight: 1472,
     link: "https://play.google.com/store/apps/dev?id=6722069957231039117",
   },
   {
@@ -35,6 +39,8 @@ export const workItems = [
     type: "Freelance",
     message: "Energy monitoring application for real estate",
     asset: "/assets/portfolio_mach.png",
+    assetWidth: 1080,
+    assetHeight: 1920,
     link: "https://machenergy.com",
   },
   {
@@ -43,6 +49,8 @@ export const workItems = [
     message:
       "Gaming B2B SDK, compliance and wallet management. Powering apps like Backyard Sports, Dave & Busters, and 5iron Golf.",
     asset: "/assets/portfolio_lucra.webp",
+    assetWidth: 461,
+    assetHeight: 937,
     link: "https://lucrasports.com",
   },
   {
@@ -51,6 +59,8 @@ export const workItems = [
     message:
       "5M+ downloads, powered the central camera SDK used in Teams, GroupMe, and Skype",
     asset: "/assets/portfolio_flip.png",
+    assetWidth: 488,
+    assetHeight: 1086,
     link: "https://play.google.com/store/apps/details?id=com.vidku.app.flipgrid",
   },
   {
@@ -58,6 +68,8 @@ export const workItems = [
     type: "Full-time",
     message: "Campus and workplace safety platform, 500k+ downloads",
     asset: "/assets/portfolio_livesafe.png",
+    assetWidth: 498,
+    assetHeight: 886,
     link: "https://play.google.com/store/apps/details?id=com.livesafe.activities",
   },
   {
@@ -65,6 +77,8 @@ export const workItems = [
     type: "Full-time",
     message: "RV rental app, 10k+ downloads",
     asset: "/assets/portfolio_outdoorsy.png",
+    assetWidth: 301,
+    assetHeight: 553,
     link: "https://play.google.com/store/apps/details?id=com.outdoorsy.owner",
   },
   {
@@ -72,6 +86,8 @@ export const workItems = [
     type: "Side project",
     message: "Crypto investment tracker and portfolio app",
     asset: "/assets/portfolio_cryptonomy.png",
+    assetWidth: 430,
+    assetHeight: 926,
     link: "https://producthunt.com/posts/cryptonomy-2-0",
   },
   {
@@ -79,6 +95,8 @@ export const workItems = [
     type: "Full-time",
     message: "Online tutoring app, 100k+ downloads",
     asset: "/assets/portfolio_varsitytutors.png",
+    assetWidth: 506,
+    assetHeight: 1134,
     link: "https://play.google.com/store/apps/details?id=com.varsitytutors.tutoringtools",
   },
 ];

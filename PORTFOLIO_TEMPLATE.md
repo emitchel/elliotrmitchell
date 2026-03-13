@@ -244,6 +244,6 @@ Required links in theme contact sections:
 
 | # | Direction / Reference | Colors | Font | Status |
 |---|---|---|---|---|
-| 1 | Minimal white — rounded section cards, CSS phone mockups for portfolio, staggered skill pills | bg `#f9f9f7`, accent `#0a0a0a` | Inter | Built at `/1` |
+| 1 | Minimal white — rounded section cards, CSS phone mockups for portfolio, staggered skill pills | bg `#f9f9f7`, accent `#0a0a0a` | Plus Jakarta Sans | Built at `/1` |
 | 2 | Field Notes — warm editorial minimalism, profile-led hero, dense work grid with side rail | bg `#f3efe7`, accent `#9f6848` | Manrope / Newsreader | Built at `/2` (default) |
 | 3 | Legacy — original Bootstrap/jQuery site | bg `#1a1a2e`, accent `#e94560` | system-ui | Preserved at `/3`, not a design theme |
