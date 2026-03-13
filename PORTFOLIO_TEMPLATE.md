@@ -76,6 +76,7 @@ Current contact exports expected in themes:
 
 ## Do Not Do These Things
 
+- Do not display the `type` field from `workItems` (e.g. "Freelance", "Full-time", "Side project") — this information is not meant to be shown to visitors
 - Do not add a standalone resume CTA or button such as `See resume` or `Download resume`
 - Do not add standalone hero/contact CTA buttons that directly say `Contact me` or expose the email outside the grouped contact/social links
 - Do not describe Elliot as being open or available for freelance work, or otherwise sell availability in page copy
@@ -247,3 +248,4 @@ Required links in theme contact sections:
 | 1 | Minimal white — rounded section cards, CSS phone mockups for portfolio, staggered skill pills | bg `#f9f9f7`, accent `#0a0a0a` | Plus Jakarta Sans | Built at `/1` |
 | 2 | Field Notes — warm editorial minimalism, profile-led hero, dense work grid with side rail | bg `#f3efe7`, accent `#9f6848` | Manrope / Newsreader | Built at `/2` (default) |
 | 3 | Legacy — original Bootstrap/jQuery site | bg `#1a1a2e`, accent `#e94560` | system-ui | Preserved at `/3`, not a design theme |
+| 4 | Signal Playground — bold kinetic layout, layered phone mockups, delivery-and-leadership framing | bg `#fff6eb`, accent `#ff6b2c` | Syne / IBM Plex Sans | Built at `/4` |

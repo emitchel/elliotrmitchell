@@ -18,7 +18,7 @@ export const profileImages = {
 export const workItems = [
   {
     name: "Rill Social",
-    type: "Freelance",
+
     message: "A social hangout app with groups, events, and messaging",
     asset: "/assets/portfolio_rill.png",
     assetWidth: 1008,
@@ -27,7 +27,7 @@ export const workItems = [
   },
   {
     name: "Lens Distortions",
-    type: "Freelance",
+
     message: "World class photo editor, 5M+ downloads",
     asset: "/assets/portfolio_lensdistortions.png",
     assetWidth: 826,
@@ -36,7 +36,7 @@ export const workItems = [
   },
   {
     name: "Mach Energy",
-    type: "Freelance",
+
     message: "Energy monitoring application for real estate",
     asset: "/assets/portfolio_mach.png",
     assetWidth: 1080,
@@ -45,7 +45,7 @@ export const workItems = [
   },
   {
     name: "Lucra Sports",
-    type: "Full-time",
+
     message:
       "Gaming B2B SDK, compliance and wallet management. Powering apps like Backyard Sports, Dave & Busters, and 5iron Golf.",
     asset: "/assets/portfolio_lucra.webp",
@@ -55,7 +55,7 @@ export const workItems = [
   },
   {
     name: "Microsoft Flip",
-    type: "Full-time",
+
     message:
       "5M+ downloads, powered the central camera SDK used in Teams, GroupMe, and Skype",
     asset: "/assets/portfolio_flip.png",
@@ -65,7 +65,7 @@ export const workItems = [
   },
   {
     name: "LiveSafe",
-    type: "Full-time",
+
     message: "Campus and workplace safety platform, 500k+ downloads",
     asset: "/assets/portfolio_livesafe.png",
     assetWidth: 498,
@@ -74,7 +74,7 @@ export const workItems = [
   },
   {
     name: "Outdoorsy",
-    type: "Full-time",
+
     message: "RV rental app, 10k+ downloads",
     asset: "/assets/portfolio_outdoorsy.png",
     assetWidth: 301,
@@ -83,7 +83,7 @@ export const workItems = [
   },
   {
     name: "Cryptonomy",
-    type: "Side project",
+
     message: "Crypto investment tracker and portfolio app",
     asset: "/assets/portfolio_cryptonomy.png",
     assetWidth: 430,
@@ -92,7 +92,7 @@ export const workItems = [
   },
   {
     name: "Varsity Tutors",
-    type: "Full-time",
+
     message: "Online tutoring app, 100k+ downloads",
     asset: "/assets/portfolio_varsitytutors.png",
     assetWidth: 506,
@@ -263,6 +263,159 @@ export const theme2Content = {
     heading: "Contact and profiles.",
     blurb:
       "Use the links below for email, GitHub, LinkedIn, and Stack Overflow.",
+  },
+};
+
+export const theme4Content = {
+  themeName: "Signal Playground",
+  metaTitle: "Elliot Mitchell",
+  metaDescription:
+    "Dark warm portfolio theme for Elliot Mitchell focused on Android craft, leadership, team building, and end-to-end mobile delivery.",
+  profileAlt: "Portrait of Elliot Mitchell",
+  navItems: [
+    { label: "Intro", href: "#top" },
+    { label: "Work", href: "#work" },
+    { label: "Stack", href: "#stack" },
+    { label: "Experience", href: "#experience" },
+    { label: "Contact", href: "#contact" },
+  ],
+  hero: {
+    eyebrow: "Android craft, leadership, and full-stack delivery",
+    headlineLines: ["Leads teams.", "Ships Mobile."],
+    title: portfolioIdentity.headline,
+    statement:
+      "I care about motion, spacing, and interaction detail. I also care about the architecture, release systems, and team habits that let great mobile work keep shipping.",
+    supportingBlurb: portfolioIdentity.subheadline,
+    tickerPhrases: [
+      "Mobile first",
+      "Team builder",
+      "Pixel care",
+      "Design quality",
+      "SDK distribution",
+      "Release systems",
+      "Full-stack delivery",
+    ],
+    floatingCards: [
+      "Pixel care",
+      "Ripples matter",
+      "Design systems",
+      "End-to-end ownership",
+    ],
+  },
+  principles: {
+    sectionLabel: "Operating mode",
+    heading: "High velocity only works when the system stays readable.",
+    items: [
+      {
+        title: "Lead close to the code",
+        body: "Direction lands better when architecture, UI detail, and tradeoffs stay visible.",
+      },
+      {
+        title: "Build teams that ship calmly",
+        body: "Clarity, trust, and standards matter more than performative process.",
+      },
+      {
+        title: "Think past the mobile layer",
+        body: "The app is one surface in a wider system of APIs, releases, observability, and partner constraints.",
+      },
+    ],
+  },
+  work: {
+    sectionLabel: "Portfolio wall",
+    heading: "A tighter view of shipped apps.",
+    blurb:
+      "The mobile surface matters, but so do the systems underneath it. This view keeps the work easier to scan without flattening it into a list of logos.",
+    openProjectLabel: "View project",
+  },
+  skills: {
+    sectionLabel: "Stack and signal",
+    heading: "The stack, grouped by what it moves.",
+    blurb:
+      "Android stays at the center. The surrounding work reaches build systems, SDK design, cloud services, testing, and release operations.",
+    focusAreas: [
+      {
+        title: "Mobile UI craft",
+        body: "Compose, view systems, motion, and the details people feel before they can name them.",
+      },
+      {
+        title: "Platform decisions",
+        body: "SDK design, modularization, dependency strategy, and architecture that survives real teams.",
+      },
+      {
+        title: "Leadership systems",
+        body: "Hiring, mentoring, clear feedback, and keeping quality intact while speed stays high.",
+      },
+    ],
+    toolGroups: [
+      {
+        title: "Android and UI",
+        items: [
+          "Kotlin",
+          "Java",
+          "Jetpack Compose",
+          "XML/View-based UI",
+          "Camera SDK",
+          "Google Play Billing",
+          "Bluetooth LE",
+        ],
+      },
+      {
+        title: "Architecture and testing",
+        items: [
+          "Hilt/Dagger",
+          "SDK Architecture & Publishing",
+          "Modular Build Systems",
+          "JUnit",
+          "Robolectric",
+        ],
+      },
+      {
+        title: "Release and platform systems",
+        items: [
+          "CI/CD (Bitrise / GitHub Actions / GitLab CI / Jenkins)",
+          "Firebase",
+          "AWS",
+          "Cloudflare",
+          "New Relic",
+          "App Center",
+        ],
+      },
+      {
+        title: "Cross-platform and web",
+        items: [
+          "Swift",
+          "React",
+          "React Native",
+          "JavaScript",
+          "TypeScript",
+          "Node.js",
+        ],
+      },
+    ],
+  },
+  experience: {
+    sectionLabel: "Timeline",
+    heading: "Roles across shipping, scaling, and leading mobile teams.",
+    blurb:
+      "A quick read on the companies, roles, and kinds of mobile problems I have spent time solving.",
+  },
+  contact: {
+    sectionLabel: "Contact and signal",
+    heading: "Contact, code, writing, and the usual trail.",
+    blurb:
+      "Use the links below for direct contact and public work.",
+    links: [
+      { key: "email", label: "Email" },
+      { key: "stackOverflow", label: "Stack Overflow" },
+      { key: "github", label: "GitHub" },
+      { key: "linkedin", label: "LinkedIn" },
+    ],
+  },
+  notes: {
+    sectionLabel: "Further signal",
+    writingHeading: "Writing",
+    openSourceHeading: "Open source",
+    footerNote: "Handmade by me.",
   },
 };
 
