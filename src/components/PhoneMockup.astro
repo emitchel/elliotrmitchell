@@ -21,6 +21,7 @@ const { src, alt, width = 200 } = Astro.props;
   .phone-frame {
     position: relative;
     width: var(--phone-width, 160px);
+    max-width: 100%;
     aspect-ratio: 9 / 20; /* modern Android (Pixel/Galaxy) — 20:9 portrait */
     background: #141414;
     border-radius: 26px;
@@ -29,7 +30,7 @@ const { src, alt, width = 200 } = Astro.props;
       0 0 0 1px #0a0a0a,
       0 24px 48px rgba(0, 0, 0, 0.18),
       0 4px 8px rgba(0, 0, 0, 0.12);
-    flex-shrink: 0;
+    flex-shrink: 1;
     /* no padding — screen is absolutely positioned to the inset area */
   }
 
@@ -106,9 +107,9 @@ const { src, alt, width = 200 } = Astro.props;
     display: block;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     .phone-frame {
-      --phone-width: 110px;
+      --phone-width: clamp(90px, 28vw, 140px);
     }
   }
 </style>

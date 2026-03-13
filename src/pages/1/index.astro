@@ -54,6 +54,7 @@ const emailHref = `mailto:${contactDetails.email}`;
       font-size: 16px;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     /* ─── NAV ─── */
@@ -505,7 +506,7 @@ const emailHref = `mailto:${contactDetails.email}`;
       .nav-links { display: none; }
     }
     @media (max-width: 480px) {
-      .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
+      .portfolio-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
