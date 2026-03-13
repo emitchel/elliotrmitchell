@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import PhoneMockup from "../../components/PhoneMockup.astro";
 import ThemeSwitcher from "../../components/ThemeSwitcher.astro";
 import {
   contactDetails,
@@ -12,13 +12,9 @@ import {
   writingArticles,
 } from "../../content/portfolioContent.js";
 
-const profileImage = profileImages.profile7;
+const profileImage = profileImages.profile4;
 const primaryArticle = writingArticles[0];
-const heroProjects = [
-  workItems.find(({ name }) => name === "Lucra Sports"),
-  workItems.find(({ name }) => name === "Microsoft Flip"),
-  workItems.find(({ name }) => name === "Rill Social"),
-].filter(Boolean);
+const heroRailItems = workItems;
 const work = workItems.map((item, index) => ({
   ...item,
   bundleClass: `bundle-tone-${(index % 3) + 1}`,
@@ -52,7 +48,6 @@ const toolGroups = theme4Content.skills.toolGroups;
 
       :root {
         --bg: #241a18;
-        --bg-soft: #2e2220;
         --paper: #ede0d1;
         --paper-strong: #f7eee5;
         --surface: rgba(247, 238, 229, 0.88);
@@ -61,14 +56,12 @@ const toolGroups = theme4Content.skills.toolGroups;
         --muted: #625852;
         --accent: #b65332;
         --accent-deep: #7e321d;
-        --accent-soft: rgba(182, 83, 50, 0.12);
         --line: rgba(22, 18, 16, 0.12);
         --line-strong: rgba(22, 18, 16, 0.2);
         --shadow: 0 28px 80px rgba(0, 0, 0, 0.18);
         --max: 1220px;
         --radius-xl: 34px;
         --radius-lg: 26px;
-        --radius-md: 20px;
       }
 
       html {
@@ -181,7 +174,7 @@ const toolGroups = theme4Content.skills.toolGroups;
 
       .hero {
         display: grid;
-        grid-template-columns: minmax(0, 0.98fr) minmax(0, 1.02fr);
+        grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
         gap: 18px;
         align-items: stretch;
       }
@@ -197,6 +190,8 @@ const toolGroups = theme4Content.skills.toolGroups;
 
       .hero-copy {
         padding: clamp(24px, 4vw, 38px);
+        display: grid;
+        align-content: start;
       }
 
       .section-label {
@@ -231,8 +226,23 @@ const toolGroups = theme4Content.skills.toolGroups;
         display: block;
       }
 
+      .hero-portrait {
+        width: clamp(132px, 24vw, 178px);
+        height: clamp(132px, 24vw, 178px);
+        margin-top: 22px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid rgba(247, 238, 229, 0.98);
+        box-shadow: 0 18px 36px rgba(0, 0, 0, 0.12);
+        background-color: rgba(247, 238, 229, 0.95);
+        background-image: var(--portrait-image);
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center 22%;
+      }
+
       .hero-kicker {
-        margin: 18px 0 0;
+        margin: 20px 0 0;
         font-family: "Space Grotesk", system-ui, sans-serif;
         font-size: clamp(1rem, 2vw, 1.22rem);
         line-height: 1.2;
@@ -291,25 +301,34 @@ const toolGroups = theme4Content.skills.toolGroups;
 
       .hero-stage {
         padding: 20px;
-        display: grid;
-        gap: 16px;
-        align-content: start;
+        min-width: 0;
+        overflow-y: auto;
         background:
           radial-gradient(circle at top right, rgba(182, 83, 50, 0.14), transparent 28%),
           linear-gradient(180deg, rgba(252, 246, 239, 0.94), rgba(240, 228, 216, 0.86));
+        scrollbar-width: thin;
+        scrollbar-color: rgba(126, 50, 29, 0.35) transparent;
       }
 
-      .hero-stage-main {
+      .hero-rail {
         display: grid;
-        grid-template-columns: 220px minmax(0, 1fr);
-        gap: 16px;
-        align-items: stretch;
+        grid-template-columns: repeat(3, 130px);
+        gap: 14px;
+        justify-content: center;
       }
 
-      .portrait-card,
-      .cluster-card,
-      .principle-card,
+      .hero-rail-item {
+        text-decoration: none;
+        transition: transform 0.22s ease;
+        display: block;
+      }
+
+      .hero-rail-item:hover {
+        transform: translateY(-6px);
+      }
+
       .project-card,
+      .principle-card,
       .focus-card,
       .tool-group,
       .timeline-list,
@@ -319,71 +338,6 @@ const toolGroups = theme4Content.skills.toolGroups;
         background: rgba(255, 249, 242, 0.8);
       }
 
-      .portrait-card {
-        padding: 12px;
-        display: grid;
-        gap: 12px;
-        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
-      }
-
-      .portrait-card :global(.portrait-image) {
-        width: 100%;
-        aspect-ratio: 0.92;
-        object-fit: cover;
-        object-position: center top;
-        border-radius: 20px;
-      }
-
-      .portrait-meta {
-        display: grid;
-        gap: 4px;
-      }
-
-      .portrait-meta strong {
-        font-size: 0.96rem;
-      }
-
-      .portrait-meta span {
-        color: var(--muted);
-        font-size: 0.84rem;
-      }
-
-      .hero-cluster {
-        display: grid;
-        gap: 12px;
-      }
-
-      .cluster-card {
-        display: grid;
-        grid-template-columns: auto minmax(0, 1fr);
-        gap: 14px;
-        align-items: center;
-        padding: 14px;
-        text-decoration: none;
-        transition: transform 0.22s ease, border-color 0.22s ease;
-      }
-
-      .cluster-card:hover {
-        transform: translateY(-3px);
-        border-color: var(--line-strong);
-      }
-
-      .cluster-copy {
-        display: grid;
-        gap: 4px;
-      }
-
-      .cluster-type,
-      .project-type {
-        margin: 0;
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--accent-deep);
-      }
-
-      .cluster-copy strong,
       .project-copy h3,
       .focus-card h3,
       .principle-card h3,
@@ -394,11 +348,6 @@ const toolGroups = theme4Content.skills.toolGroups;
         letter-spacing: -0.05em;
       }
 
-      .cluster-copy strong {
-        font-size: 1.02rem;
-      }
-
-      .cluster-copy span,
       .principle-card p,
       .project-copy p,
       .focus-card p,
@@ -407,29 +356,6 @@ const toolGroups = theme4Content.skills.toolGroups;
       .footer-card p {
         color: var(--muted);
         line-height: 1.65;
-      }
-
-      .hero-notes {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-
-      .hero-note {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 14px;
-        border-radius: 999px;
-        border: 1px solid var(--line);
-        background: rgba(255, 251, 247, 0.9);
-        font-size: 0.8rem;
-        font-weight: 700;
-      }
-
-      .hero-note::before {
-        content: "*";
-        color: var(--accent);
       }
 
       .bundle {
@@ -729,7 +655,6 @@ const toolGroups = theme4Content.skills.toolGroups;
           flex-direction: column;
         }
 
-        .hero-stage-main,
         .principles-grid,
         .work-grid,
         .tool-groups,
@@ -737,12 +662,14 @@ const toolGroups = theme4Content.skills.toolGroups;
           grid-template-columns: 1fr;
         }
 
-        .portrait-card {
-          max-width: 260px;
-        }
-
         .timeline-row {
           grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 1100px) {
+        .hero-stage {
+          display: none;
         }
       }
 
@@ -759,8 +686,7 @@ const toolGroups = theme4Content.skills.toolGroups;
           border-radius: 24px;
         }
 
-        .project-card,
-        .cluster-card {
+        .project-card {
           grid-template-columns: 1fr;
           justify-items: start;
         }
@@ -769,6 +695,7 @@ const toolGroups = theme4Content.skills.toolGroups;
           width: 96px;
           height: 78px;
         }
+
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -812,6 +739,12 @@ const toolGroups = theme4Content.skills.toolGroups;
                 <span>{line}</span>
               ))}
             </h1>
+            <div
+              class="hero-portrait"
+              role="img"
+              aria-label={theme4Content.profileAlt}
+              style={`--portrait-image:url(${profileImage.src})`}
+            ></div>
             <p class="hero-kicker">{theme4Content.hero.title}</p>
             <p class="hero-statement">{theme4Content.hero.statement}</p>
             <p class="hero-support">{theme4Content.hero.supportingBlurb}</p>
@@ -826,49 +759,15 @@ const toolGroups = theme4Content.skills.toolGroups;
           </div>
 
           <div class="hero-stage" data-reveal style="--delay:100ms">
-            <div class="hero-stage-main">
-              <div class="portrait-card">
-                <Image
-                  src={profileImage.src}
-                  width={profileImage.width}
-                  height={profileImage.height}
-                  alt={theme4Content.profileAlt}
-                  class="portrait-image"
-                />
-                <div class="portrait-meta">
-                  <strong>{portfolioIdentity.name}</strong>
-                  <span>{portfolioIdentity.headline}</span>
-                </div>
-              </div>
-
-              <div class="hero-cluster">
-                {heroProjects.map((item, index) => (
-                  <a
-                    class="cluster-card"
-                    href={item.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    data-reveal
-                    style={`--delay:${index * 80}ms`}
-                  >
-                    <div class:list={["bundle", `bundle-tone-${(index % 3) + 1}`]} style={`--asset:url(${item.asset})`}>
-                      <span class="bundle-tile bundle-tile-a"></span>
-                      <span class="bundle-tile bundle-tile-b"></span>
-                      <span class="bundle-tile bundle-tile-c"></span>
-                    </div>
-                    <div class="cluster-copy">
-                      <p class="cluster-type">{item.type}</p>
-                      <strong>{item.name}</strong>
-                      <span>{item.message}</span>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            <div class="hero-notes">
-              {theme4Content.hero.floatingCards.map((item) => (
-                <span class="hero-note">{item}</span>
+            <div class="hero-rail">
+              {heroRailItems.map((item) => (
+                <a class="hero-rail-item" href={item.link} target="_blank" rel="noreferrer">
+                  <PhoneMockup
+                    src={item.asset}
+                    alt={item.name}
+                    width={130}
+                  />
+                </a>
               ))}
             </div>
           </div>
@@ -902,7 +801,6 @@ const toolGroups = theme4Content.skills.toolGroups;
               {work.map((item, index) => (
                 <article class="project-card" data-reveal style={`--delay:${index * 50}ms`}>
                   <div class="project-copy">
-                    <p class="project-type">{item.type}</p>
                     <h3>{item.name}</h3>
                     <p>{item.message}</p>
                     <a

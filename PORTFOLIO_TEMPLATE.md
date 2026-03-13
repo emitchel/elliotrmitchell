@@ -76,6 +76,7 @@ Current contact exports expected in themes:
 
 ## Do Not Do These Things
 
+- Do not display the `type` field from `workItems` (e.g. "Freelance", "Full-time", "Side project") — this information is not meant to be shown to visitors
 - Do not add a standalone resume CTA or button such as `See resume` or `Download resume`
 - Do not add standalone hero/contact CTA buttons that directly say `Contact me` or expose the email outside the grouped contact/social links
 - Do not describe Elliot as being open or available for freelance work, or otherwise sell availability in page copy

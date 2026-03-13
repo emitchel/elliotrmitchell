@@ -18,7 +18,7 @@ export const profileImages = {
 export const workItems = [
   {
     name: "Rill Social",
-    type: "Freelance",
+
     message: "A social hangout app with groups, events, and messaging",
     asset: "/assets/portfolio_rill.png",
     assetWidth: 1008,
@@ -27,7 +27,7 @@ export const workItems = [
   },
   {
     name: "Lens Distortions",
-    type: "Freelance",
+
     message: "World class photo editor, 5M+ downloads",
     asset: "/assets/portfolio_lensdistortions.png",
     assetWidth: 826,
@@ -36,7 +36,7 @@ export const workItems = [
   },
   {
     name: "Mach Energy",
-    type: "Freelance",
+
     message: "Energy monitoring application for real estate",
     asset: "/assets/portfolio_mach.png",
     assetWidth: 1080,
@@ -45,7 +45,7 @@ export const workItems = [
   },
   {
     name: "Lucra Sports",
-    type: "Full-time",
+
     message:
       "Gaming B2B SDK, compliance and wallet management. Powering apps like Backyard Sports, Dave & Busters, and 5iron Golf.",
     asset: "/assets/portfolio_lucra.webp",
@@ -55,7 +55,7 @@ export const workItems = [
   },
   {
     name: "Microsoft Flip",
-    type: "Full-time",
+
     message:
       "5M+ downloads, powered the central camera SDK used in Teams, GroupMe, and Skype",
     asset: "/assets/portfolio_flip.png",
@@ -65,7 +65,7 @@ export const workItems = [
   },
   {
     name: "LiveSafe",
-    type: "Full-time",
+
     message: "Campus and workplace safety platform, 500k+ downloads",
     asset: "/assets/portfolio_livesafe.png",
     assetWidth: 498,
@@ -74,7 +74,7 @@ export const workItems = [
   },
   {
     name: "Outdoorsy",
-    type: "Full-time",
+
     message: "RV rental app, 10k+ downloads",
     asset: "/assets/portfolio_outdoorsy.png",
     assetWidth: 301,
@@ -83,7 +83,7 @@ export const workItems = [
   },
   {
     name: "Cryptonomy",
-    type: "Side project",
+
     message: "Crypto investment tracker and portfolio app",
     asset: "/assets/portfolio_cryptonomy.png",
     assetWidth: 430,
@@ -92,7 +92,7 @@ export const workItems = [
   },
   {
     name: "Varsity Tutors",
-    type: "Full-time",
+
     message: "Online tutoring app, 100k+ downloads",
     asset: "/assets/portfolio_varsitytutors.png",
     assetWidth: 506,
@@ -268,7 +268,7 @@ export const theme2Content = {
 
 export const theme4Content = {
   themeName: "Signal Playground",
-  metaTitle: "Elliot Mitchell - Signal Playground",
+  metaTitle: "Elliot Mitchell",
   metaDescription:
     "Dark warm portfolio theme for Elliot Mitchell focused on Android craft, leadership, team building, and end-to-end mobile delivery.",
   profileAlt: "Portrait of Elliot Mitchell",
@@ -281,17 +281,17 @@ export const theme4Content = {
   ],
   hero: {
     eyebrow: "Android craft, leadership, and full-stack delivery",
-    headlineLines: ["Leads teams.", "Ships Android."],
+    headlineLines: ["Leads teams.", "Ships Mobile."],
     title: portfolioIdentity.headline,
     statement:
       "I care about motion, spacing, and interaction detail. I also care about the architecture, release systems, and team habits that let great mobile work keep shipping.",
     supportingBlurb: portfolioIdentity.subheadline,
     tickerPhrases: [
-      "Android first",
+      "Mobile first",
       "Team builder",
       "Pixel care",
       "Design quality",
-      "SDK architecture",
+      "SDK distribution",
       "Release systems",
       "Full-stack delivery",
     ],

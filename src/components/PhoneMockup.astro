@@ -1,15 +1,11 @@
 ---
-import { Image } from 'astro:assets';
-
 interface Props {
   src: string;
   alt: string;
-  width?: number; // px, default 200 — height auto-derived at exact 9:16
-  imageWidth: number;
-  imageHeight: number;
+  width?: number; // px, default 200 — height auto-derived at 9:20
 }
 
-const { src, alt, width = 200, imageWidth, imageHeight } = Astro.props;
+const { src, alt, width = 200 } = Astro.props;
 ---
 
 <div class="phone-frame" style={`--phone-width: ${width}px`}>
@@ -17,7 +13,7 @@ const { src, alt, width = 200, imageWidth, imageHeight } = Astro.props;
   <span class="btn-vol"></span>
   <span class="btn-power"></span>
   <div class="phone-screen">
-    <Image class="phone-image" src={src} alt={alt} width={imageWidth} height={imageHeight} />
+    <img class="phone-image" src={src} alt={alt} />
   </div>
 </div>
 
@@ -25,8 +21,8 @@ const { src, alt, width = 200, imageWidth, imageHeight } = Astro.props;
   .phone-frame {
     position: relative;
     width: var(--phone-width, 160px);
+    height: calc(var(--phone-width, 160px) * 20 / 9);
     max-width: 100%;
-    aspect-ratio: 9 / 20; /* modern Android (Pixel/Galaxy) — 20:9 portrait */
     background: #141414;
     border-radius: 26px;
     box-shadow:
@@ -104,6 +100,8 @@ const { src, alt, width = 200, imageWidth, imageHeight } = Astro.props;
   }
 
   .phone-screen :global(.phone-image) {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -114,6 +112,7 @@ const { src, alt, width = 200, imageWidth, imageHeight } = Astro.props;
   @media (max-width: 768px) {
     .phone-frame {
       --phone-width: clamp(90px, 28vw, 140px);
+      height: calc(var(--phone-width) * 20 / 9);
     }
   }
 </style>

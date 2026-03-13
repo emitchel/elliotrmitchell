@@ -128,6 +128,10 @@ Theme log lives in `PORTFOLIO_TEMPLATE.md` → `## Theme Log`.
 - [nareshkhatri.site](https://www.nareshkhatri.site/) — design reference
 - Add more here over time as you find them
 
+**Theme cleanup I need to do**
+- remove all uses of freelance/full-time references in the portfolio links, it doesn't help
+- clean up the verbiage on all fronts, some pages lean too hard into android professional, i want to be more mobile generic with the hint that i've been doing android most of my career and thats what i specialize in, but i do all things mobile.
+
 ---
 
 **Theme ideas backlog (unbuilt):**
