@@ -12,12 +12,22 @@ Personal portfolio site for Elliot Mitchell (Mobile/Android Engineer).
 
 ## Routing
 
-| URL           | File                         |
-|---------------|------------------------------|
-| `/`           | `src/pages/index.astro`      |
-| `/creep`      | `src/pages/creep.astro`      |
-| `/dragracing` | `src/pages/dragracing.astro` |
-| `/photos`     | `src/pages/photos.astro`     |
+| URL           | File                              |
+|---------------|-----------------------------------|
+| `/`           | `src/pages/index.astro` — rewrites to active theme via `Astro.rewrite()` |
+| `/1`          | `src/pages/1/index.astro` — Theme 1: Minimal White                       |
+| `/2`          | `src/pages/2/index.astro` — Theme 2: (current active theme)              |
+| `/3`          | `src/pages/3/index.astro` — Legacy site (old Bootstrap/jQuery page)      |
+| `/creep`      | `src/pages/creep.astro`                                                   |
+| `/dragracing` | `src/pages/dragracing.astro`                                              |
+| `/photos`     | `src/pages/photos.astro`                                                  |
+
+**To change the active theme:** edit the `Astro.rewrite()` path in `src/pages/index.astro`. No redirect, no flicker — Astro bakes the target theme's HTML into `index.html` at build time.
+
+**When building a new theme iteration:**
+- Single theme brief and source-of-truth reference: `PORTFOLIO_TEMPLATE.md`
+- Shared theme content module: `src/content/portfolioContent.js`
+- Theme log: `PORTFOLIO_TEMPLATE.md` → `## Theme Log`
 
 ---
 
@@ -91,30 +101,60 @@ Keeping the domain at Namecheap is totally fine as long as Cloudflare controls t
 
 ---
 
-### Phase 7 — UI Modernization
-Goal: multiple distinct visual themes sharing one content spec. Random theme per visitor, subtle easter egg switcher, preference data collection. See **[DESIGN.md](DESIGN.md)** for full brief.
+### Phase 7 — Theme Building (in progress)
 
-**Step 1 — Lock content (do this first)**
-- [ ] Approve/finalize headline & sub-headline
-- [ ] Approve/finalize bio copy
-- [ ] Confirm Rill Social one-liner + assets situation
-- [ ] Confirm additional work list (add/remove)
-- [ ] Confirm skills list (add/remove)
-- [ ] Decide on phone number visibility
+**References (read these before touching anything):**
+- `PORTFOLIO_TEMPLATE.md` — single source of truth for theme rules, content reference, dos/don'ts, and theme log
+- `src/content/portfolioContent.js` — shared theme content consumed by theme pages
 
-**Step 2 — Build themes (one at a time)**
-- [ ] Create feature branch for redesign
-- [ ] Install Tailwind CSS
-- [ ] Build Theme A (first visual direction — decide after content locked)
-- [ ] Build Theme B
-- [ ] Build Theme C+
+---
 
-**Step 3 — Theme infrastructure**
-- [ ] Easter egg theme switcher component (subtle, not obvious)
-- [ ] localStorage preference persistence
-- [ ] Preference event tracking (Cloudflare Analytics or Worker + KV)
-- [ ] Random theme assignment for new visitors (client JS or Cloudflare Worker)
-- [ ] Remove all legacy JS/CSS from old site (jQuery, Bootstrap, Vegas, EasyPieChart, ~12 plugin files)
+**7A — Theme building (ongoing)**
+
+Each session: describe or reference a design direction → a new theme gets built at `/N`.
+No content decisions needed unless `PORTFOLIO_TEMPLATE.md` or `src/content/portfolioContent.js` changes.
+Theme log lives in `PORTFOLIO_TEMPLATE.md` → `## Theme Log`.
+
+- [x] Content locked — shared theme content lives in `src/content/portfolioContent.js`
+- [x] Theme 1 built → `/1` (minimal white, rounded cards, phone mockups, staggered pills)
+- [ ] Theme 2, 3, N… — describe a direction each session, one at a time
+
+---
+
+**7B — Theme switcher easter egg (design decided, wiring deferred)**
+
+The goal: every theme page has a subtle, unobtrusive floating component that lets visitors know what they're looking at, shuffle to a different theme, and optionally lock in their preference. New visitors always get a random theme.
+
+**Component behavior (to build — `src/components/ThemeSwitcher.astro`):**
+- Floats subtly on every theme page — small, corner-positioned, not obvious
+- Shows: `Theme #N` label
+- Has a shuffle button → picks a random different `/N` and navigates there
+- Has a "stay here" toggle → writes `preferred_theme=N` to `localStorage`
+- On page load: if `localStorage` has a preference, show it subtly ("your saved theme")
+- Hover to reveal, or always-visible but minimal — exact treatment up to the theme
+
+**Random assignment for new visitors:**
+- No `localStorage` preference = randomly pick a theme number and redirect on load
+- Implementation options (pick one when building):
+  - **Client-side JS** (simplest): on `index.astro` load, read localStorage or pick random N, redirect to `/N`. Small flash risk.
+  - **Cloudflare Worker** (cleanest): intercepts request to `/`, sets a `theme` cookie at the edge, serves the right page with zero flash. No redirect needed.
+- Recommendation: start with client-side JS at `/` for now, upgrade to Worker later
+
+**Analytics — what to track:**
+- Theme viewed on page load (which `/N` was visited)
+- Shuffle event (from which theme, to which theme)
+- Preference saved event (which theme was locked in)
+
+**Analytics implementation options (pick one when building):**
+- **Cloudflare Web Analytics custom events** — free, already installed, just call `window.cfAnalytics.pushEvent(...)` — simplest
+- **Cloudflare Worker + KV** — Worker receives a POST with event data, writes to KV store — queryable later, slightly more setup
+- **Query param on shuffle** — append `?from=1&to=3` on shuffle navigations — shows up in Cloudflare Analytics path data automatically, zero code
+
+**Open questions before building 7B:**
+- [ ] How visible should the switcher be? Hover-only tooltip vs always-visible small badge?
+- [ ] Should "shuffle" be instant navigate or a smooth CSS transition between themes?
+- [ ] Which analytics approach? (recommendation: Cloudflare custom events — already wired up)
+- [ ] How many themes need to exist before wiring up random assignment at `/`?
 
 ---
 

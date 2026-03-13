@@ -1,0 +1,261 @@
+---
+// Portfolio Index — directory of all built themes
+// Active theme (the one / redirects to) is marked with a star.
+
+const ACTIVE_THEME = 2;
+
+const themes = [
+  {
+    number: 1,
+    name: "Minimal White",
+    description: "Rounded section cards, CSS phone mockups, staggered skill pills",
+    bg: "#f9f9f7",
+    surface: "#ffffff",
+    text: "#0a0a0a",
+    accent: "#0a0a0a",
+    fontFamily: "'Inter', system-ui, sans-serif",
+    fontUrl: "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap",
+  },
+  {
+    number: 2,
+    name: "Field Notes",
+    description: "Warm editorial minimalism, profile-led hero, dense work grid",
+    bg: "#f3efe7",
+    surface: "rgba(255, 252, 246, 0.96)",
+    text: "#1d1b19",
+    accent: "#9f6848",
+    fontFamily: "'Manrope', system-ui, sans-serif",
+    fontUrl: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap",
+  },
+  {
+    number: 3,
+    name: "Legacy",
+    description: "Original Bootstrap/jQuery site — kept for historical reference",
+    bg: "#1a1a2e",
+    surface: "#16213e",
+    text: "#e0e0e0",
+    accent: "#e94560",
+    fontFamily: "system-ui, sans-serif",
+    fontUrl: null,
+  },
+];
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio Iterations — Elliot Mitchell</title>
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  {themes.filter(t => t.fontUrl).map(t => (
+    <link href={t.fontUrl} rel="stylesheet" />
+  ))}
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #edecea;
+      font-family: system-ui, sans-serif;
+      color: #1a1a1a;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 64px 24px 96px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #888;
+      text-decoration: none;
+      margin-bottom: 36px;
+      letter-spacing: 0.01em;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: #222; }
+
+    h1 {
+      font-size: clamp(22px, 4vw, 28px);
+      font-weight: 700;
+      margin: 0 0 6px;
+      letter-spacing: -0.02em;
+      color: #111;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #888;
+      margin: 0 0 48px;
+      line-height: 1.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 24px;
+    }
+
+    .theme-card {
+      border-radius: 20px;
+      overflow: hidden;
+      text-decoration: none;
+      display: block;
+      position: relative;
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      box-shadow:
+        0 1px 2px rgba(0,0,0,0.04),
+        0 4px 16px rgba(0,0,0,0.08),
+        0 12px 32px rgba(0,0,0,0.05);
+    }
+
+    .theme-card:hover {
+      transform: translateY(-5px);
+      box-shadow:
+        0 1px 2px rgba(0,0,0,0.04),
+        0 8px 24px rgba(0,0,0,0.11),
+        0 24px 48px rgba(0,0,0,0.09);
+    }
+
+    /* swatch: taller preview area showing theme bg + big number */
+    .card-swatch {
+      height: 160px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      padding: 0 24px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* large ghost number fills the swatch */
+    .card-number {
+      position: absolute;
+      top: 50%;
+      right: -8px;
+      transform: translateY(-54%);
+      font-size: 130px;
+      font-weight: 800;
+      line-height: 1;
+      opacity: 0.14;
+      user-select: none;
+      letter-spacing: -0.06em;
+    }
+
+    /* theme name label sits over the number */
+    .card-swatch-label {
+      position: relative;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .default-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: rgba(0,0,0,0.10);
+    }
+
+    /* card body: white-ish surface, theme-flavored text */
+    .card-body {
+      padding: 16px 22px 22px;
+      border-top: 1.5px solid rgba(0,0,0,0.06);
+    }
+
+    .card-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 5px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .card-desc {
+      font-size: 12.5px;
+      line-height: 1.55;
+      margin: 0;
+      opacity: 0.55;
+    }
+
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+      .card-swatch { height: 130px; }
+      .card-number { font-size: 100px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <a href="/" class="back-link">← back to portfolio</a>
+    <h1>Portfolio iterations</h1>
+    <p class="subtitle">Each is an independent design direction built on the same content.</p>
+
+    <div class="grid">
+      {themes.map(theme => (
+        <a href={`/${theme.number}`} class="theme-card">
+
+          <div class="card-swatch" style={`background: ${theme.bg};`}>
+            <span
+              class="card-number"
+              style={`font-family: ${theme.fontFamily}; color: ${theme.text};`}
+            >
+              {theme.number}
+            </span>
+
+            <span
+              class="card-swatch-label"
+              style={`font-family: ${theme.fontFamily}; color: ${theme.accent};`}
+            >
+              Theme {theme.number}
+            </span>
+
+            {theme.number === ACTIVE_THEME && (
+              <span
+                class="default-badge"
+                style={`color: ${theme.text};`}
+              >
+                ★ default
+              </span>
+            )}
+          </div>
+
+          <div class="card-body" style={`background: ${theme.surface};`}>
+            <p
+              class="card-name"
+              style={`font-family: ${theme.fontFamily}; color: ${theme.text};`}
+            >
+              {theme.name}
+            </p>
+            <p
+              class="card-desc"
+              style={`font-family: ${theme.fontFamily}; color: ${theme.text};`}
+            >
+              {theme.description}
+            </p>
+          </div>
+
+        </a>
+      ))}
+    </div>
+  </div>
+</body>
+</html>

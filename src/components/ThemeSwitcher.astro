@@ -1,0 +1,176 @@
+---
+// ThemeSwitcher — floating "EM" easter egg button
+// Every theme page must include this component.
+//
+// Props:
+//   themeNumber  — integer, which theme this page is (e.g. 1, 2)
+//   fontFamily   — CSS font-family string for the button label
+//   primaryColor — main background color of the theme
+//   accentColor  — accent/highlight color of the theme
+
+const {
+  themeNumber,
+  fontFamily = "system-ui, sans-serif",
+  primaryColor = "#ffffff",
+  accentColor = "#0a0a0a",
+} = Astro.props;
+---
+
+<div class="ts-wrapper">
+  <button
+    class="ts-trigger"
+    id="ts-trigger"
+    aria-label="About this portfolio theme"
+    style={`font-family: ${fontFamily}; background: ${accentColor}; color: ${primaryColor};`}
+  >
+    EM
+  </button>
+
+  <div class="ts-popover" id="ts-popover" role="dialog" aria-modal="true" aria-label="Theme info">
+    <button class="ts-close" id="ts-close" aria-label="Close">✕</button>
+    <p class="ts-blurb">
+      Hi — you're looking at just one of my iterations of this portfolio.
+      <a href="/portfolioindex" class="ts-link" style={`color: ${accentColor};`}>Click here to see all of them.</a>
+    </p>
+    <p class="ts-label" style={`color: ${accentColor};`}>Theme {themeNumber}</p>
+  </div>
+</div>
+
+<style>
+  .ts-wrapper {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+  }
+
+  .ts-trigger {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.55;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+    padding: 0;
+  }
+
+  .ts-trigger:hover {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+
+  .ts-popover {
+    position: absolute;
+    bottom: 54px;
+    right: 0;
+    width: 260px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.14);
+    padding: 20px 20px 16px;
+    display: none;
+    animation: ts-fade-in 0.18s ease;
+  }
+
+  .ts-popover.open {
+    display: block;
+  }
+
+  @keyframes ts-fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .ts-blurb {
+    margin: 0 0 12px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: #333;
+  }
+
+  .ts-link {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 600;
+  }
+
+  .ts-link:hover {
+    opacity: 0.75;
+  }
+
+  .ts-label {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .ts-close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    color: #999;
+    padding: 2px 4px;
+    line-height: 1;
+  }
+
+  .ts-close:hover {
+    color: #333;
+  }
+
+  /* Mobile: anchor to bottom of page flow instead of fixed */
+  @media (max-width: 768px) {
+    .ts-wrapper {
+      position: static;
+      display: flex;
+      justify-content: center;
+      padding: 32px 0 24px;
+    }
+
+    .ts-popover {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      right: auto;
+      transform: translateX(-50%);
+      width: calc(100vw - 48px);
+      max-width: 320px;
+    }
+  }
+</style>
+
+<script>
+  const trigger = document.getElementById('ts-trigger');
+  const popover = document.getElementById('ts-popover');
+  const close   = document.getElementById('ts-close');
+
+  trigger?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    popover?.classList.toggle('open');
+  });
+
+  close?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    popover?.classList.remove('open');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (popover?.classList.contains('open') && !popover.contains(e.target as Node)) {
+      popover.classList.remove('open');
+    }
+  });
+</script>
