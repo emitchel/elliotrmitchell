@@ -24,7 +24,19 @@ The implementation is broken into four areas:
 
 ### Why R2
 
-R2 is Cloudflare's S3-compatible object storage. Free tier is 10 GB storage and **zero egress fees** — meaning serving photos to visitors costs nothing beyond storage. For 1–20 MB photos, 10 GB covers ~500–10,000 photos before you'd need to think about it.
+R2 is Cloudflare's S3-compatible object storage. Free tier is 10 GB storage and **zero egress fees** — meaning serving photos to visitors costs nothing beyond storage.
+
+**Storage capacity with both originals and display copies:**
+
+| Original size avg | Display copy avg | Per-photo total | Photos in 10 GB free |
+|---|---|---|---|
+| 5 MB | 2 MB | 7 MB | ~1,400 |
+| 10 MB | 3 MB | 13 MB | ~750 |
+| 20 MB | 4 MB | 24 MB | ~415 |
+
+After 10 GB: **$0.015/GB/month** — 50 GB extra costs $0.75/month. Not a meaningful expense.
+
+If you decide originals aren't needed in R2 (camera is the backup), drop the `originals/` folder and multiply the photo count by roughly 5–6x at the same cost.
 
 ### Bucket Structure
 
@@ -71,23 +83,15 @@ elliotrmitchell-photos/
 
 ### Image Optimization
 
-**The problem:** 20 MB RAW/JPEG photos will destroy load time on a gallery page.
-**The solution:** Generate a display copy on upload.
+**The problem:** 20 MB RAW/JPEG photos at full resolution will destroy gallery load time.
+**The solution:** Generate a web-optimized display copy in the browser before uploading.
 
-Two approaches — pick one:
+The Worker does **not** resize. The browser does — using the canvas API, which is free, has no CPU limits, and means the Worker only handles storage. The upload page generates a display copy client-side (max 2000px wide, 85% JPEG quality) and sends **both** files to the Worker: the original and the display copy. The Worker writes them both to R2 as-is.
 
-#### Option A: Cloudflare Images (recommended if budget allows)
-Cloudflare Images costs $5/month and gives you on-demand image transformations via URL parameters. You store the original once, and Cloudflare serves it at any size/format on demand:
-```
-https://imagedelivery.net/<account>/<image-id>/w=800,format=webp
-https://imagedelivery.net/<account>/<image-id>/w=400,format=webp,q=80
-```
-This means the gallery can request the exact size needed per device. Clean, no manual work.
+This is simpler than Worker-side resize and stays entirely within free tier limits (see [Worker Limits](#worker-limits) below).
 
-#### Option B: Worker-side resize on upload (free, slightly more complex)
-The upload Worker (described below) uses the `@cf/image-resizing` API to generate a display copy (e.g. max 2000px wide, 85% quality JPEG or WebP) and stores it in `display/` at upload time. Visitors always get the pre-resized version. No per-request processing cost.
-
-**Recommendation:** Start with Option B (free). Add Cloudflare Images later if you want per-device sizing.
+**Optional upgrade: Cloudflare Images ($5/month)**
+If you later want per-device sizing (e.g. the grid loads a smaller thumbnail on mobile, the lightbox loads full-width), Cloudflare Images stores one copy and transforms it on-demand via URL parameters. Not needed to start.
 
 ---
 
@@ -100,15 +104,23 @@ You take a photo on your camera, connect to the site on your laptop or phone, up
 ### Architecture: Cloudflare Worker + Private Admin Page
 
 ```
-[Your browser]  →  /admin/photos  (Astro static page, password-gated)
-      ↓
-[Upload form]  →  POST /api/upload  (Cloudflare Worker)
-      ↓                                    ↓
-[Worker validates secret]        [Worker reads EXIF if available]
-      ↓                                    ↓
-[Writes original to R2]          [Generates display copy]
-      ↓                                    ↓
-[Updates manifest.json in R2]    [Returns success to UI]
+[Your browser — admin page]
+      │
+      ├─ reads EXIF from file (exifr, in-browser)   ← date auto-fill
+      ├─ draws display copy via canvas               ← resize happens here, no Worker needed
+      │
+      ├─ POST /api/upload  (original file + display copy + metadata)
+      │         │
+      │   [Cloudflare Worker]
+      │         ├─ validates X-Upload-Secret header → 403 if wrong
+      │         ├─ fires notification (Discord/email)
+      │         ├─ writes original  → R2: originals/<filename>
+      │         ├─ writes display   → R2: display/<filename>
+      │         ├─ reads manifest.json from R2
+      │         ├─ appends entry, writes manifest.json back
+      │         └─ returns { success: true }
+      │
+      └─ UI updates card status → "Live ✓"
 ```
 
 ### Admin Page (`/em-internal/upload` or similar obscure path)
@@ -185,51 +197,47 @@ The secret lives only in Cloudflare's Worker environment secrets (dashboard → 
 **Worker logic (per request — one photo):**
 
 ```
-1.  Validate X-Upload-Secret header → 403 if wrong or missing
-2.  Trigger notification (Discord webhook or email) — fires on EVERY call,
-    valid or not, so you're alerted to any probe or abuse attempt
-3.  Parse multipart body → extract: file bytes, title, description, takenAt
-4.  Validate file type (JPEG/PNG/HEIC only) → 400 if unexpected
-5.  Generate unique filename: <ISO-date>_<slugified-title>_<6-char-hash>.jpg
-6.  Write original to R2: originals/<filename>
-7.  Resize/compress for display (max 2000px wide, 85% JPEG) → write to R2: display/<filename>
-8.  Read manifest.json from R2
-9.  Append new photo entry, write manifest.json back to R2
+1. Validate X-Upload-Secret header → 403 if wrong or missing
+2. Trigger notification (Discord webhook or email) — fires on EVERY call,
+   valid or not, so you're alerted to any probe or abuse attempt
+3. Parse multipart body → extract: original bytes, display bytes, title, description, takenAt
+4. Validate file type (JPEG/PNG/HEIC only) → 400 if unexpected
+5. Generate unique filename: <ISO-date>_<slugified-title>_<6-char-hash>.jpg
+6. Write original to R2:      originals/<filename>   ← async I/O, no CPU cost
+7. Write display copy to R2:  display/<filename>     ← async I/O, no CPU cost
+8. Read manifest.json from R2                        ← async I/O, no CPU cost
+9. Append new photo entry, write manifest.json back  ← ~1ms CPU
 10. Return { success: true, id: filename } to browser
 ```
 
-Step 2 fires for invalid requests too — so a wrong-secret probe still triggers a notification. You'll know immediately if someone is poking at the endpoint.
+The Worker does **zero image processing**. All it does is store what the browser already prepared and update the manifest. Steps 6–8 are async I/O — they don't count against the Worker's CPU time budget.
 
-**EXIF on the Worker side:** EXIF is also read client-side (to pre-fill the date field), but the Worker re-reads it from the raw bytes as a secondary source. The client-provided `takenAt` takes precedence (since the user may have edited it), but if it's missing the Worker extracts it from EXIF as a fallback.
+Step 2 fires for invalid requests too — a wrong-secret probe still triggers a notification. You'll know immediately if someone is poking at the endpoint.
 
 **Rate limiting:** A Cloudflare WAF rate limit rule on the free plan can cap requests to `/api/upload` — e.g. max 20 requests per hour per IP. This is set in the Cloudflare dashboard, not in code, so it's not visible in the public repo.
 
-### Worker Limits and Bulk Uploads
+### Worker Limits
 
-Cloudflare Workers on the free plan have a **100ms CPU time limit per request**. On the paid Bundled plan ($5/month Workers add-on) this rises to 30 seconds. Image resizing is CPU-intensive.
+**The actual CPU limit on the free plan is 10ms** — not 100ms. That sounds alarming but the key distinction is: the 10ms measures only actual JavaScript execution time. Waiting for async I/O (R2 reads, R2 writes, outbound fetch calls) does **not** count against it.
 
-**Why sequential (one at a time) is the right call:**
+For this Worker's logic:
 
-Sending all photos in one big multipart request would mean one Worker invocation handles all the resizing — almost certain to hit the CPU limit on free, and risky even on paid for large batches. It also means if anything fails partway through, there's no clean recovery.
+| Step | Type | CPU cost |
+|---|---|---|
+| Validate secret header | CPU | ~0.1ms |
+| Parse multipart body | CPU | ~1–2ms |
+| Write original to R2 | Async I/O | not counted |
+| Write display copy to R2 | Async I/O | not counted |
+| Read manifest.json | Async I/O | not counted |
+| Append entry + write manifest | CPU + I/O | ~1ms CPU |
+| Discord webhook POST | Async I/O | not counted |
 
-Sending photos one at a time means:
-- Each Worker invocation handles exactly one photo resize — much less CPU pressure
-- If one photo fails, the rest of the queue continues unaffected
-- The UI can show per-photo status (uploading / done / failed) naturally
-- Retrying a failed photo is trivial — just resend that one request
+**Total CPU: ~3ms.** The 10ms budget is not a problem because the Worker does no image processing — only I/O and a small amount of JSON manipulation. Resizing happened in the browser already.
 
-**Will one Worker invocation per photo stay within limits?**
+**Why sequential uploads (one at a time) is still the right call:**
+Not because of CPU limits — but because it gives you clean per-card status in the UI, and a failure on one photo doesn't affect the rest of the queue. Sending everything in a single request would mean one failure kills the whole batch with no recovery path.
 
-For a single 20 MB JPEG:
-- Network transfer to Worker: handled by Cloudflare infra, not CPU time
-- EXIF parse: ~1–2ms
-- Image resize (Cloudflare built-in image resizing API, not JS): offloaded to Cloudflare's image pipeline — does not count against Worker CPU time
-- R2 write: async I/O, does not block CPU
-- manifest.json read + update: ~1–2ms
-
-**Verdict: comfortably within free plan limits.** The expensive operations (resize, R2 I/O) are either handled by Cloudflare's built-in systems or are async I/O that doesn't consume CPU time budget. A batch of 12 photos = 12 sequential Worker invocations, each well under 100ms CPU.
-
-The only real bottleneck is network time (your upload bandwidth). 12 × 20 MB photos = 240 MB. On a typical home connection (50 Mbps upload) that's about 40 seconds total — sequential is fine, and the per-card progress UI makes it feel responsive rather than frozen.
+**Upload time reality check:** Sending both the original and display copy per photo means ~24 MB per upload over the wire (e.g. 20 MB original + 4 MB display). On a 50 Mbps upload connection, that's about 4 seconds per photo. A batch of 12 = roughly 48 seconds total. Sequential is fine — you're watching per-card progress the whole time.
 
 ### Notifications (Worker Alert on Every Call)
 
@@ -367,7 +375,7 @@ Photo in the lightbox is constrained to `max-width: 90vw, max-height: 90vh` — 
 - R2 is served via Cloudflare's CDN — photos are edge-cached globally
 - The static page shell (HTML/CSS/JS) is on Cloudflare Pages CDN — zero latency
 - `loading="lazy"` means only above-fold photos load on arrival
-- Display copies are pre-sized to ~2000px max — not 20 MB originals
+- Display copies are pre-sized to ~2000px max in the browser before upload — not 20 MB originals
 - `aspect-ratio` on grid cells prevents layout shift before images load
 
 ---
@@ -500,14 +508,15 @@ This is a one-click Cloudflare dashboard rule — no code change needed. The new
    - `UPLOAD_SECRET` — the upload auth token
    - `DISCORD_WEBHOOK_URL` (or `RESEND_API_KEY`) — for notifications
 4. Bind the R2 bucket to the Worker (`R2_BUCKET` binding)
-5. Implement upload logic: validate secret → notify → parse form → EXIF extract → resize → write to R2 → update manifest
+5. Implement upload logic: validate secret → notify → receive original + display copy → write both to R2 → update manifest
 6. Create `src/pages/em-internal/upload.astro` (or similarly obscure path) — multi-photo staging UI with per-card metadata + sequential upload queue
-7. Integrate `exifr` in-browser (client-side) for auto-filling date fields from EXIF before upload
-8. Test: upload several photos via the admin page, verify per-card status updates, verify manifest.json and R2
+7. Integrate `exifr` in-browser (client-side) for EXIF date auto-fill; use browser canvas API for display copy resize — both happen before any network request
+8. Test: upload several photos via the admin page, verify per-card status updates, verify both files and manifest.json appear in R2
 
 Dependencies:
-- `exifr` — EXIF parsing, used both client-side (date pre-fill) and in the Worker (fallback)
-- Cloudflare built-in image resizing API — no npm needed, available in Workers runtime
+- `exifr` — EXIF parsing, client-side only (date pre-fill from camera metadata)
+- Browser canvas API — built-in, no library needed, handles the display copy resize before upload
+- No image processing library needed in the Worker
 
 ---
 
@@ -600,7 +609,7 @@ Additionally, a Cloudflare WAF rule (free tier available) can block requests to 
 
 ## Open Questions Before Building
 
-- [ ] **Cloudflare Images ($5/mo) or free resize-on-upload?** Recommendation: start free, upgrade if needed.
+- [ ] **Cloudflare Images ($5/mo) or browser canvas resize?** Proposal uses browser canvas (free). Upgrade to Cloudflare Images later if you want per-device sizing (mobile gets smaller thumbnails, etc.).
 - [ ] **Watermark text:** "© Elliot Mitchell" or just "EM" or a small icon?
 - [ ] **Grid default density:** Medium (3 columns) recommended as default.
 - [ ] **Photos per page:** Load all from manifest at once, or paginate? Recommendation: load all (manifest is JSON, small). Lazy loading handles performance.
@@ -627,7 +636,7 @@ Additionally, a Cloudflare WAF rule (free tier available) can block requests to 
 | Photo storage | Cloudflare R2 | Free (10 GB) |
 | Photo delivery / CDN | Cloudflare (R2 served via CDN edge) | Free (no egress) |
 | Metadata | `manifest.json` in R2 | Free |
-| Image resize on upload | Cloudflare Worker built-in image API | Free |
+| Image resize for display copies | Browser canvas API (client-side, before upload) | Free |
 | Upload auth | Shared secret header + Cloudflare Worker | Free |
 | Admin page | Static Astro page at `/admin/photos` | Free |
 | Gallery page | `/photos` — Astro page + client-side JS | Free |
