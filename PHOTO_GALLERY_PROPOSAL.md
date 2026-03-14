@@ -111,24 +111,62 @@ You take a photo on your camera, connect to the site on your laptop or phone, up
 [Updates manifest.json in R2]    [Returns success to UI]
 ```
 
-### Admin Page (`/admin/photos`)
+### Admin Page (`/em-internal/upload` or similar obscure path)
 
-A static Astro page — no server-side auth needed because the page itself is just a form. The real security gate is the Worker.
+A static Astro page — no server-side auth, because this is a `output: 'static'` site. The page is just a UI shell. The real security gate is the Worker.
 
-The page contains:
-- A file input (accepts JPEG/HEIC/PNG/RAW)
-- A title field (optional — can be auto-named from filename or EXIF)
-- A description field (optional)
-- A "taken at" date picker (optional — auto-filled from EXIF if available)
-- A submit button
+The page is **not linked from anywhere** — not in nav, not in sitemap, not in robots.txt. Obscurity is the first layer.
 
-The page is **not linked from anywhere** — it only exists at `/admin/photos`. Anyone who navigates there will see the form, but they can't successfully upload without the secret.
+#### Multi-photo upload flow
 
-**Important:** Do not add this page to any nav or sitemap. Obscurity is the first layer.
+The page supports selecting many photos in one session. The UX is:
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Secret: [____________________________]  (password) │
+│                                                     │
+│  [ + Add photos ]  ← file picker, multiple select  │
+└─────────────────────────────────────────────────────┘
+
+As photos are picked, they appear in a staging grid below:
+
+┌──────────┐  ┌──────────┐  ┌──────────┐
+│ [thumb]  │  │ [thumb]  │  │ [thumb]  │
+│          │  │          │  │          │
+│ Title    │  │ Title    │  │ Title    │
+│ [______] │  │ [______] │  │ [______] │
+│ Desc     │  │ Desc     │  │ Desc     │
+│ [______] │  │ [______] │  │ [______] │
+│ Date     │  │ Date     │  │ Date     │
+│ [date  ] │  │ [date  ] │  │ [date  ] │
+│          │  │          │  │          │
+│  [✕ rm] │  │  [✕ rm] │  │  [✕ rm] │
+└──────────┘  └──────────┘  └──────────┘
+
+[ + Add more ]                  [ Upload all ]
+```
+
+**How each card is populated:**
+- Thumbnail: rendered immediately client-side via `URL.createObjectURL()` — no upload yet
+- Title: auto-filled from the filename (stripped of extension/underscores), editable
+- Description: blank, optional
+- Date: auto-read from EXIF embedded in the file (using `exifr` running in-browser) if present. Falls back to today's date. Fully editable via a date+time picker.
+
+The user can add more photos at any point before submitting — clicking "+ Add more" opens the file picker again and appends new cards to the grid. Cards can be removed individually with the ✕ button.
+
+When satisfied, clicking **Upload all** fires the uploads. Each photo is sent to the Worker **one at a time, sequentially** — not in parallel. This is a deliberate choice (see [Worker Limits](#worker-limits-and-bulk-uploads) below).
+
+Each card shows its own status inline as the queue progresses:
+- Pending: gray outline
+- Uploading: spinner + "Uploading…"
+- Done: green checkmark + "Live"
+- Failed: red border + error message + retry button
+
+After all uploads complete, a link to `/photos` appears so you can verify.
 
 ### Upload Worker (`/api/upload`)
 
-A Cloudflare Worker that handles the actual upload. Deployed alongside the Pages project.
+A Cloudflare Worker bound to the Pages project, handling one photo per request.
 
 **Authentication — shared secret header:**
 
@@ -138,38 +176,90 @@ X-Upload-Secret: <your-secret-token>
 Content-Type: multipart/form-data
 ```
 
-The Worker checks for the `X-Upload-Secret` header. If missing or wrong → `403`. If correct → proceed.
+The Worker checks `X-Upload-Secret` on every request. Wrong or missing → `403`, nothing happens. Correct → proceed.
 
-The secret is stored as a Cloudflare Worker environment secret (not in the repo). You set it once in the Cloudflare dashboard under Workers → Settings → Variables & Secrets. It never appears in code or git.
+The secret lives only in Cloudflare's Worker environment secrets (dashboard → Worker → Settings → Variables & Secrets). Never in the repo, never in source. The admin page JS reads whatever the user typed into the password field and attaches it as a header — the value is never written to `localStorage` or anywhere persistent.
 
-**How the admin page sends the secret:**
-The secret is entered into a password field on the admin page before submitting. The JS on the page attaches it as a request header. The field value is never stored to `localStorage` — you type it each session.
+> **Security posture:** The secret is a 32+ character random token. Even if someone finds the admin URL and reads the page source, they cannot upload without the token. The security surface is entirely in Cloudflare, not in any code that's public.
 
-> **Security note:** This is not enterprise-grade auth, but it's very solid for a personal site. The secret is 32+ character random string. Even if someone finds the `/admin/photos` URL, they can't upload without the secret. No accounts, no OAuth, no database.
-
-**Worker logic:**
+**Worker logic (per request — one photo):**
 
 ```
-1. Validate X-Upload-Secret header → 403 if wrong
-2. Parse multipart form body → extract file, title, description, takenAt
-3. Extract EXIF takenAt from image bytes if takenAt not provided
-4. Generate unique filename: <ISO-date>_<slugified-title>.jpg
-5. Resize/compress image for display copy (max 2000px wide, 85% quality)
-6. Write original to R2: originals/<filename>
-7. Write display copy to R2: display/<filename>
-8. Read manifest.json from R2
-9. Append new photo entry to manifest array
-10. Write updated manifest.json back to R2
-11. Return { success: true, id: filename } to the browser
+1.  Validate X-Upload-Secret header → 403 if wrong or missing
+2.  Trigger notification (Discord webhook or email) — fires on EVERY call,
+    valid or not, so you're alerted to any probe or abuse attempt
+3.  Parse multipart body → extract: file bytes, title, description, takenAt
+4.  Validate file type (JPEG/PNG/HEIC only) → 400 if unexpected
+5.  Generate unique filename: <ISO-date>_<slugified-title>_<6-char-hash>.jpg
+6.  Write original to R2: originals/<filename>
+7.  Resize/compress for display (max 2000px wide, 85% JPEG) → write to R2: display/<filename>
+8.  Read manifest.json from R2
+9.  Append new photo entry, write manifest.json back to R2
+10. Return { success: true, id: filename } to browser
 ```
 
-**EXIF extraction:** The Worker can parse EXIF from JPEG/HEIC using a small EXIF parsing library (e.g. `exifr` bundled into the Worker). This lets you skip filling in the date manually — it reads it from the camera's metadata.
+Step 2 fires for invalid requests too — so a wrong-secret probe still triggers a notification. You'll know immediately if someone is poking at the endpoint.
 
-**Rate limiting:** Worker can enforce a hard limit (e.g. max 5 uploads per hour per IP) using Cloudflare's built-in rate limiting. Stops abuse even if the URL is discovered.
+**EXIF on the Worker side:** EXIF is also read client-side (to pre-fill the date field), but the Worker re-reads it from the raw bytes as a secondary source. The client-provided `takenAt` takes precedence (since the user may have edited it), but if it's missing the Worker extracts it from EXIF as a fallback.
 
-### Upload UX
+**Rate limiting:** A Cloudflare WAF rate limit rule on the free plan can cap requests to `/api/upload` — e.g. max 20 requests per hour per IP. This is set in the Cloudflare dashboard, not in code, so it's not visible in the public repo.
 
-After a successful upload, the admin page shows a thumbnail preview and a link to `/photos` so you can immediately verify it appears. The gallery page always fetches `manifest.json` fresh, so no rebuild is needed — photos appear instantly.
+### Worker Limits and Bulk Uploads
+
+Cloudflare Workers on the free plan have a **100ms CPU time limit per request**. On the paid Bundled plan ($5/month Workers add-on) this rises to 30 seconds. Image resizing is CPU-intensive.
+
+**Why sequential (one at a time) is the right call:**
+
+Sending all photos in one big multipart request would mean one Worker invocation handles all the resizing — almost certain to hit the CPU limit on free, and risky even on paid for large batches. It also means if anything fails partway through, there's no clean recovery.
+
+Sending photos one at a time means:
+- Each Worker invocation handles exactly one photo resize — much less CPU pressure
+- If one photo fails, the rest of the queue continues unaffected
+- The UI can show per-photo status (uploading / done / failed) naturally
+- Retrying a failed photo is trivial — just resend that one request
+
+**Will one Worker invocation per photo stay within limits?**
+
+For a single 20 MB JPEG:
+- Network transfer to Worker: handled by Cloudflare infra, not CPU time
+- EXIF parse: ~1–2ms
+- Image resize (Cloudflare built-in image resizing API, not JS): offloaded to Cloudflare's image pipeline — does not count against Worker CPU time
+- R2 write: async I/O, does not block CPU
+- manifest.json read + update: ~1–2ms
+
+**Verdict: comfortably within free plan limits.** The expensive operations (resize, R2 I/O) are either handled by Cloudflare's built-in systems or are async I/O that doesn't consume CPU time budget. A batch of 12 photos = 12 sequential Worker invocations, each well under 100ms CPU.
+
+The only real bottleneck is network time (your upload bandwidth). 12 × 20 MB photos = 240 MB. On a typical home connection (50 Mbps upload) that's about 40 seconds total — sequential is fine, and the per-card progress UI makes it feel responsive rather than frozen.
+
+### Notifications (Worker Alert on Every Call)
+
+You want to know any time the upload endpoint is called — legitimate upload or probe. Two solid options:
+
+#### Option A: Discord webhook (recommended — free, 2 minutes to set up)
+
+Create a private Discord server (or use an existing one), add a channel, create a webhook URL in channel settings. Store the webhook URL as a Worker environment secret (`DISCORD_WEBHOOK_URL`). The Worker does a `fetch()` POST to it on every request:
+
+```
+[📷 Upload attempt]
+IP: 203.0.113.42
+Result: ✅ SUCCESS — lake-tahoe-june.jpg uploaded
+Time: 2024-06-01 07:43 UTC
+
+[🚨 Upload attempt]
+IP: 198.51.100.7
+Result: ❌ REJECTED — wrong secret
+Time: 2024-06-02 14:22 UTC
+```
+
+The webhook URL is a secret — stored in Cloudflare, never in the repo. Discord is free and you almost certainly already have it.
+
+#### Option B: Email via Resend (free tier — 3,000 emails/month)
+
+Resend is a dead-simple transactional email API. Free tier is generous. The Worker sends a `fetch()` POST to `api.resend.com` with your API key (stored as a Worker secret, never in repo). You get an email for every upload attempt. Slightly more setup than Discord but works without any extra apps.
+
+**Which to pick:** Discord webhook if you have Discord. Resend if you prefer email. Both store the target credential as a Cloudflare Worker secret — nothing in the repo.
+
+**Important:** The notification fires before processing completes — even a rejected request (wrong secret) triggers it. This is intentional. If you see a cluster of rejected attempts from an IP you don't recognize, you know the endpoint has been discovered and you can rotate the secret or add a WAF block rule.
 
 ---
 
@@ -406,13 +496,18 @@ This is a one-click Cloudflare dashboard rule — no code change needed. The new
 
 1. Create a Cloudflare Worker (`workers/upload-worker.js`) in the repo
 2. Configure Worker routing: `/api/upload` → Worker
-3. Set `UPLOAD_SECRET` as a Worker environment secret in Cloudflare dashboard
+3. Set the following as Worker environment secrets in Cloudflare dashboard (never in repo):
+   - `UPLOAD_SECRET` — the upload auth token
+   - `DISCORD_WEBHOOK_URL` (or `RESEND_API_KEY`) — for notifications
 4. Bind the R2 bucket to the Worker (`R2_BUCKET` binding)
-5. Implement upload logic: validate secret → parse form → resize → write to R2 → update manifest
-6. Create `src/pages/admin/photos.astro` — simple HTML form that POSTs to `/api/upload` with the secret header
-7. Test: upload a photo via the admin page, verify it appears in manifest.json and R2
+5. Implement upload logic: validate secret → notify → parse form → EXIF extract → resize → write to R2 → update manifest
+6. Create `src/pages/em-internal/upload.astro` (or similarly obscure path) — multi-photo staging UI with per-card metadata + sequential upload queue
+7. Integrate `exifr` in-browser (client-side) for auto-filling date fields from EXIF before upload
+8. Test: upload several photos via the admin page, verify per-card status updates, verify manifest.json and R2
 
-Dependencies: `exifr` (EXIF parsing), `@cf/image-resizing` (Cloudflare Workers image API — no npm needed, built in)
+Dependencies:
+- `exifr` — EXIF parsing, used both client-side (date pre-fill) and in the Worker (fallback)
+- Cloudflare built-in image resizing API — no npm needed, available in Workers runtime
 
 ---
 
